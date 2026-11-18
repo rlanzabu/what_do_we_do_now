@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#c0c0c0">
+  <title>What Do We Do Now? — Class Archive</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #111;
+      --muted: #666;
+      --desktop: #778b78;
+      --blue: #000080;
+      --blue-light: #3a6ea5;
+      --chrome: #c0c0c0;
+      --white: #fff;
+      --black: #000;
+      --border-light: #fff;
+      --border-mid: #dfdfdf;
+      --border-dark: #808080;
+      --border-xdark: #404040;
+      --nav-height: 42px;
+      --mono: "Tahoma", "MS Sans Serif", Verdana, sans-serif;
+      font-family: var(--mono);
+    }
+
+    @font-face {
+      font-family: "Dauphine";
+      src: url("./src/Dauphine%20Regular.otf") format("opentype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; scroll-behavior: smooth; }
+
+    body {
+      width: 100%;
+      min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      color: var(--ink);
+      background: var(--desktop);
+      font: 13px/1.35 var(--mono);
+    }
+
+    button { font: inherit; }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: calc(100dvh - var(--nav-height));
+      min-height: 480px;
+      overflow: hidden;
+      background-color: #111;
+      background-image:
+        url("./src/cirrus_cloud_white.jpg"),
+        linear-gradient(135deg, #26303a, #101116 72%);
+      background-position: center center, center;
+      background-size: cover, cover;
+      background-repeat: no-repeat;
+    }
+
+    .desktop {
+      position: absolute;
+      inset: 0;
+      overflow: auto;
+      scrollbar-color: #9c9c9c var(--chrome);
+    }
+
+    .site-title {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      width: max-content;
+      max-width: calc(100% - 32px);
+      margin: 0;
+      color: #fff;
+      font: 600 clamp(24px, 4vw, 42px)/.95 "Dauphine", var(--mono);
+      letter-spacing: 0;
+      pointer-events: none;
+      text-align: center;
+      text-shadow: 0 2px 5px #000, 1px 1px 1px #000;
+      transform: translate(-50%, -50%);
+    }
+
+    .desktop-node {
+      position: absolute;
+      display: flex;
+      width: 138px;
+      min-height: 130px;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #fff;
+      cursor: grab;
+      text-align: center;
+      text-shadow: 1px 1px 1px #333;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .desktop-node:active { cursor: grabbing; }
+
+    .desktop-node.selected,
+    .desktop-node:focus-visible {
+      border: 1px dotted #fff;
+      background: rgb(0 0 128 / 50%);
+      outline: none;
+    }
+
+    .desktop-node img {
+      display: grid;
+      width: var(--png-size, 74px);
+      height: var(--png-size, 74px);
+      flex: 0 0 var(--png-size, 74px);
+      object-fit: contain;
+      place-items: center;
+      min-width: 0;
+      filter: drop-shadow(1px 2px 2px rgb(0 0 0 / 45%));
+    }
+
+    .node-label {
+      max-width: 126px;
+      color: #000;
+      overflow-wrap: anywhere;
+      font-size: 12px;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgb(255 255 255 / 90%);
+    }
+
+    .node-creator {
+      color: #efefef;
+      font-size: 10px;
+    }
+
+    .context-menu {
+      position: fixed;
+      z-index: 3100;
+      display: flex;
+      width: 184px;
+      flex-direction: column;
+      padding: 3px;
+      border: 1px solid var(--border-dark);
+      background: var(--chrome);
+      box-shadow: inset 1px 1px var(--white), 2px 3px 8px rgb(0 0 0 / 35%);
+    }
+
+    .context-menu button {
+      padding: 7px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .thumbnail-resize {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 4px 8px;
+      padding: 8px 10px 6px;
+      border-top: 1px solid var(--border-dark);
+      color: var(--ink);
+      font-size: 11px;
+    }
+
+    .thumbnail-resize input {
+      width: 100%;
+      grid-column: 1 / -1;
+      margin: 2px 0;
+      accent-color: var(--blue);
+      cursor: ew-resize;
+    }
+
+    .context-menu button:hover,
+    .context-menu button:focus-visible {
+      background: var(--blue);
+      color: var(--white);
+      outline: none;
+    }
+
+    .socials-entry { position: relative; }
+
+    .socials-toggle {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .socials-submenu {
+      position: fixed;
+      z-index: 1;
+      display: none;
+      width: min(280px, calc(100vw - 16px));
+      max-height: min(320px, calc(100vh - 16px));
+      flex-direction: column;
+      overflow: auto;
+      padding: 3px;
+      border: 1px solid var(--border-dark);
+      background: var(--chrome);
+      box-shadow: inset 1px 1px var(--white), 2px 3px 8px rgb(0 0 0 / 35%);
+    }
+
+    .socials-entry.is-open .socials-submenu { display: flex; }
+
+    .socials-link {
+      display: block;
+      padding: 6px 9px;
+      color: var(--ink);
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .socials-link:hover,
+    .socials-link:focus-visible {
+      background: var(--blue);
+      color: var(--white);
+      outline: none;
+    }
+
+    .socials-empty {
+      padding: 7px 9px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .taskbar {
+      position: fixed;
+      z-index: 3000;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      height: var(--nav-height);
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 4px 6px;
+      border-top: 2px solid var(--white);
+      background: var(--chrome);
+      box-shadow: inset 0 1px var(--border-mid);
+    }
+
+    .taskbar-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .task-btn {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border: 0;
+      background: var(--chrome);
+      color: var(--black);
+      cursor: pointer;
+      box-shadow:
+        inset -1px -1px var(--border-dark),
+        inset 1px 1px var(--white),
+        inset -2px -2px var(--border-xdark),
+        inset 2px 2px var(--border-mid);
+    }
+
+    .task-btn:active,
+    .task-btn.active {
+      box-shadow:
+        inset 1px 1px var(--border-dark),
+        inset -1px -1px var(--white),
+        inset 2px 2px var(--border-xdark),
+        inset -2px -2px var(--border-mid);
+    }
+
+    .task-icon { width: 17px; font-size: 16px; text-align: center; }
+    .task-icon svg { display: block; width: 17px; height: 17px; }
+
+    .taskbar-title {
+      overflow: hidden;
+      color: #333;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .overlay-backdrop {
+      position: fixed;
+      z-index: 2000;
+      inset: 0 0 var(--nav-height);
+      background: rgb(0 0 0 / 16%);
+    }
+
+    .overlay-backdrop[hidden],
+    .window-shell[hidden] { display: none; }
+
+    .window-shell {
+      position: fixed;
+      z-index: 2010;
+      inset: 0 0 var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      pointer-events: none;
+    }
+
+    .window-panel {
+      position: relative;
+      display: flex;
+      width: min(720px, 92vw);
+      height: min(76dvh, 680px);
+      flex-direction: column;
+      background: var(--chrome);
+      box-shadow:
+        inset 1px 1px var(--white),
+        inset -1px -1px var(--border-xdark),
+        5px 8px 26px rgb(0 0 0 / 38%);
+      pointer-events: auto;
+    }
+
+    .window-panel.maximized {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+    }
+
+    .titlebar {
+      display: flex;
+      min-height: 28px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 2px 4px 2px 8px;
+      background: var(--blue);
+      color: var(--white);
+      cursor: move;
+      touch-action: none;
+    }
+
+    .titlebar-text {
+      overflow: hidden;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .titlebar-controls { display: flex; gap: 3px; }
+
+    .window-control {
+      display: grid;
+      width: 22px;
+      height: 21px;
+      place-items: center;
+      border: 0;
+      background: var(--chrome);
+      color: var(--black);
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+      box-shadow: inset 1px 1px var(--white), inset -1px -1px var(--border-dark);
+    }
+
+    .window-control:active {
+      box-shadow: inset 1px 1px var(--border-dark), inset -1px -1px var(--white);
+    }
+
+    .window-viewport {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      padding: 15px;
+      background: var(--white);
+      box-shadow:
+        inset 1px 1px var(--border-dark),
+        inset -1px -1px var(--white);
+    }
+
+    .about-content {
+      max-width: 610px;
+      margin: 8px auto;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .about-content h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .about-content p { margin: 0 0 14px; }
+
+    .questions-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 4px 0 12px;
+    }
+
+    .questions-section {
+      min-height: 100vh;
+      padding: 32px 16px calc(var(--nav-height) + 32px);
+      border-top: 2px solid rgb(255 255 255 / 28%);
+      background-color: #111;
+      background-image:
+        url("./src/cirrus_cloud_white.jpg"),
+        linear-gradient(135deg, #26303a, #101116 72%);
+      background-position: center center, center;
+      background-size: cover, cover;
+      background-repeat: no-repeat;
+      color: #fff;
+    }
+
+    .questions-section > h1 {
+      max-width: 1000px;
+      margin: 0 auto 10px;
+      color: #fff;
+      font: 600 clamp(24px, 4vw, 42px)/.95 "Dauphine", var(--mono);
+      letter-spacing: 0;
+      text-align: left;
+      text-shadow: 0 2px 5px #000, 1px 1px 1px #000;
+    }
+
+    .questions-section > p {
+      max-width: 1000px;
+      margin: 0 auto 20px;
+      color: #000;
+      text-shadow: 0 1px 2px rgb(255 255 255 / 70%);
+    }
+
+    .questions-intro {
+      margin: 0 0 12px;
+      color: #000;
+      line-height: 1.5;
+      text-shadow: 0 1px 2px rgb(255 255 255 / 70%);
+    }
+
+    .question-card {
+      margin: 0 0 18px;
+      padding: 12px;
+      border: 1px solid #b8b8b8;
+      background: #f0f0f0;
+      box-shadow: inset 1px 1px var(--white), 1px 2px 3px rgb(0 0 0 / 12%);
+    }
+
+    .question-card h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .barometer-pair {
+      display: block;
+    }
+
+    .barometer-panel {
+      min-width: 0;
+      border: 1px solid #bfc1c8;
+      background: #fff;
+    }
+
+    .barometer-panel-title {
+      display: block;
+      padding: 4px 7px;
+      color: #555;
+      background: #e7e8ed;
+      font-size: 12px;
+    }
+
+    .barometer-board {
+      position: relative;
+      height: 206px;
+      overflow: hidden;
+      background-color: #fff;
+      background-image: linear-gradient(#f5f5f5 1px, transparent 1px), linear-gradient(90deg, #f5f5f5 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .pole-note {
+      position: absolute;
+      z-index: 1;
+      top: 50%;
+      display: grid;
+      width: 29%;
+      min-height: 50px;
+      place-items: center;
+      padding: 6px;
+      border: 1px dotted #c8c2b5;
+      background: #f4f1e7;
+      color: #252525;
+      font-family: Georgia, serif;
+      font-size: clamp(9px, 1.15vw, 12px);
+      line-height: 1.2;
+      text-align: center;
+      box-shadow: 2px 3px 4px rgb(0 0 0 / 12%);
+      transform: translateY(-50%) rotate(-1deg);
+    }
+
+    .pole-note::before {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      left: -5px;
+      height: 9px;
+      background: rgb(215 190 174 / 60%);
+      content: "";
+      transform: rotate(-2deg);
+    }
+
+    .pole-note.left { left: 7%; }
+    .pole-note.right { right: 7%; transform: translateY(-50%) rotate(1deg); }
+
+    .answer-dot {
+      position: absolute;
+      z-index: 2;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #2abb68;
+      box-shadow: 0 0 1px rgb(0 0 0 / 20%);
+      transform: translate(-50%, -50%);
+    }
+
+    .answer-dot.after {
+      width: 10px;
+      height: 10px;
+      background: #e85bc7;
+    }
+
+    .barometer-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px 16px;
+      min-height: 25px;
+      align-items: center;
+      padding: 3px 6px;
+      color: #555;
+      font-size: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2abb68;
+    }
+
+    .legend-dot.after { background: #e85bc7; }
+
+    .transition-control {
+      display: grid;
+      grid-template-columns: auto minmax(60px, 1fr) auto auto;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid #bfc1c8;
+      background: #e7e8ed;
+      color: #444;
+      font-size: 11px;
+    }
+
+    .transition-slider {
+      width: 100%;
+      margin: 0;
+      accent-color: #9a45b7;
+      cursor: ew-resize;
+      touch-action: pan-y;
+    }
+
+    .transition-reading {
+      min-width: 82px;
+      color: #333;
+      text-align: right;
+    }
+
+    @media (max-width: 560px) {
+      .barometer-board { height: 190px; }
+      .pole-note { font-size: 11px; }
+      .transition-control { grid-template-columns: auto minmax(45px, 1fr) auto auto; gap: 5px; padding: 8px 6px; }
+      .transition-reading { min-width: 54px; }
+    }
+
+    .about-content a,
+    .wip-content a {
+      color: #00e;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .list-window .window-viewport {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .list-header,
+    .list-row {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(100px, 1fr) minmax(80px, .75fr);
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-header {
+      min-height: 34px;
+      padding: 5px 10px;
+      border-bottom: 1px solid var(--border-dark);
+      background: var(--chrome);
+    }
+
+    .sort-button {
+      padding: 4px 2px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .sort-button:hover { text-decoration: underline; }
+
+    .list-rows { flex: 1; overflow: auto; }
+
+    .list-row {
+      width: 100%;
+      min-height: 37px;
+      padding: 6px 10px;
+      border: 0;
+      border-bottom: 1px solid #e6e6e6;
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .list-row:hover,
+    .list-row:focus-visible {
+      background: #e5eefc;
+      outline: none;
+    }
+
+    .list-row span:not(:first-child) { color: var(--muted); }
+
+    .wip-content {
+      max-width: 520px;
+      margin: 18px auto;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .description-project-link {
+      display: inline-block;
+      margin: 2px 0 16px;
+      color: #00e;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .description-screenshot {
+      margin: 16px 0;
+    }
+
+    .description-screenshot img {
+      display: block;
+      width: auto;
+      max-width: 100%;
+      max-height: 300px;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    .wip-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 3px 7px;
+      border: 1px solid var(--border-dark);
+      background: #f0f0f0;
+      color: #444;
+      font: 11px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .dialog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .dialog-actions a,
+    .dialog-actions button {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 0;
+      background: var(--chrome);
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+      text-decoration: none;
+      box-shadow: inset 1px 1px var(--white), inset -1px -1px var(--border-dark);
+    }
+
+    @media (max-width: 560px) {
+      :root { --nav-height: 48px; }
+      .desktop-node { width: 112px; min-height: 116px; }
+      .node-label { max-width: 104px; font-size: 11px; }
+      .node-creator { font-size: 9px; }
+      .taskbar { gap: 4px; padding: 4px; }
+      .taskbar-left { gap: 3px; }
+      .task-btn { width: 39px; justify-content: center; padding: 3px; }
+      .task-btn .task-name { display: none; }
+      .taskbar-title { max-width: 130px; font-size: 10px; }
+      .window-shell { padding: 7px; }
+      .window-panel { width: 100%; height: 80dvh; }
+      .window-panel.maximized { inset: 0; }
+      .window-viewport { padding: 11px; }
+      .list-header, .list-row {
+        grid-template-columns: minmax(0, 1.6fr) minmax(80px, 1fr);
+      }
+      .list-header .session,
+      .list-row .session { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <section id="desktop" class="desktop" aria-label="Project desktop"></section>
+    <h1 class="site-title">What Do We Do Now?</h1>
+    <div id="overlay-backdrop" class="overlay-backdrop" hidden></div>
+    <section id="window-shell" class="window-shell" aria-label="Archive window" hidden>
+      <div id="window-panel" class="window-panel" role="dialog" aria-modal="true" aria-labelledby="window-title">
+        <div id="titlebar" class="titlebar">
+          <span id="window-title" class="titlebar-text">Window</span>
+          <div class="titlebar-controls">
+            <button id="maximize-window" class="window-control" type="button" aria-label="Maximize window">□</button>
+            <button id="close-window" class="window-control" type="button" aria-label="Close window">×</button>
+          </div>
+        </div>
+        <div id="window-viewport" class="window-viewport"></div>
+      </div>
+    </section>
+  </main>
+
+  <section id="questions-section" class="questions-section" aria-labelledby="questions-heading">
+    <h1 id="questions-heading">Questions from the class</h1>
+    <p>Explore how responses to our questions shifted from before to after the course.</p>
+    <div id="questions-content" class="questions-content"></div>
+  </section>
+
+  <footer class="taskbar" aria-label="Archive navigation">
+    <div class="taskbar-left">
+      <button id="about-button" class="task-btn" type="button" aria-label="About">
+        <span class="task-icon" aria-hidden="true">?</span><span class="task-name">About</span>
+      </button>
+      <button id="list-button" class="task-btn" type="button" aria-label="Project list">
+        <span class="task-icon" aria-hidden="true">≡</span><span class="task-name">List</span>
+      </button>
+      <button id="questions-button" class="task-btn" type="button" aria-label="Class questions">
+        <span class="task-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 4.5h14v10H9l-4 3v-3H3z"/>
+            <path d="M7.5 8a2.5 2.5 0 1 1 4.2 1.8c-1 .9-1.7 1.1-1.7 2.2"/>
+            <path d="M10 14.2h.01"/>
+          </svg>
+        </span><span class="task-name">Questions</span>
+      </button>
+      <button id="shuffle-button" class="task-btn" type="button" aria-label="Shuffle project layout">
+        <span class="task-icon" aria-hidden="true">⇄</span><span class="task-name">Shuffle</span>
+      </button>
+    </div>
+    <span class="taskbar-title">What Do We Do Now? — Class Archive</span>
+  </footer>
+
+  <script>
+    (() => {
+      const desktop = document.getElementById("desktop");
+      const siteTitle = document.querySelector(".site-title");
+      const shell = document.getElementById("window-shell");
+      const panel = document.getElementById("window-panel");
+      const titlebar = document.getElementById("titlebar");
+      const title = document.getElementById("window-title");
+      const viewport = document.getElementById("window-viewport");
+      const backdrop = document.getElementById("overlay-backdrop");
+      const closeButton = document.getElementById("close-window");
+      const maximizeButton = document.getElementById("maximize-window");
+      const nodes = [];
+      let activeItem = null;
+      let sortKey = "title";
+      let sortAscending = true;
+      let dragState = null;
+
+      // Add or edit one object per outcome. `png` is the desktop-node image;
+      // optional `screenshot` is the image shown in that project's description.
+      // Both paths are relative to this page; omit screenshot to reuse png.
+      // Set pngSize in pixels to resize an individual thumbnail; it defaults to 74.
+      // Edit `projectName`, `participant`, and `progress` independently for each project.
+      const items = [
+        { title: "Sina Tatjana Bolder", projectName: "Project 01", participant: "KISD student", creator: "KISD student", session: "2026", html: "./project-01.html", png: "./src/2000_folder.gif", screenshot: "./src/2000_folder.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Marta Alves", projectName: "Project 02", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-02.html", png: "./src/cutie.gif", screenshot: "./src/cutie.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Christopher Fritz Siebenhaar", projectName: "AI, Ai, ai… Does the AI love me back? <3",participant: "KISD student", creator: "Student project", session: "2026", html: "./project-03.html", png: "./src/ai_fortune.png", screenshot: "./src/Christopher_Siebenhaar_Tool_Daisy.png", description: "A wheel of fortune, a percentage calculator, and a daisy whose torn petals you pluck one by one until the verdict lands: “It loves me” or “It loves me not”. AI, Ai, ai… Does the AI love me back? is a web tool for anyone who has ever wondered whether their favorite chatbot feels the same way. Instead of one answer, it offers three ways to find out. Every method is part science, part superstition, and entirely unscientific. The perfect bridge between lovesick ritual and machine logic, a little joke about asking software for reassurance. </3.", socials: [{ label: "christopher.sbh", url: "https://www.instagram.com/christopher.sbh/" }], progress: "in progress", status: "wip" },
+        { title: "Lara Marie Schiefer", projectName: "Project 04", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-04.html", png: "./src/Disaster-girl.jpg", screenshot: "./src/falling_bart.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Nastasia Dabringhaus", projectName: "Value Bridge – The Process Receipt", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-05.html", png: "./src/value-bridge-icon.png", screenshot: "./src/value-bridge-icon.png", description: "Value Bridge helps designers price a finished project fairly when the client only sees hours or deliverables. Instead of one lump sum, the work is split into five process building blocks (Discovery, Framing, Facilitation, Relationship & process work, Reflection), each translated into market language such as “Strategy” or “Stakeholder management”. For every block you enter what the client actually sees, the visible hours, and what share of the whole work that is. The tool calculates the work hidden behind it and prints everything as a thermal-paper receipt: visible to client, behind it, total. You can add your own services, switch blocks on or off, and download the receipt as a 1080 x 1350 PNG. A “Sources & numbers” panel lists the research behind the logic, including caveats. Value Bridge is a bridge between market logic and transformative design practice: it makes invisible process work legible, countable and payable.", socials: [{ label: "LinkedIn: Nastasia Dabringhaus", url: "https://www.linkedin.com/search/results/people/?keywords=Nastasia%20Dabringhaus" }], progress: "in progress", status: "wip" },
+        { title: "Meike Raupach", projectName: "Project 06", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-06.html", png: "./src/bot.png", screenshot: "./src/bot.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Hannah Shirin Tempel", projectName: "Project 07", participant: "Hannah Shirin Tempel", creator: "Student project", session: "2026", html: "./project-07.html", png: "./src/august_bust.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Lou Rosa Sternebeck", projectName: "Project 08", participant: "Lou Rosa Sternebeck", creator: "Student project", session: "2026", html: "./project-08.html", png: "./src/2000_folder.gif", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "Aliaksandra Kraskouskaya", creator: "Student project", session: "2026", html: "./project-09.html", png: "./src/angel.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Jeanette Schweiger", projectName: "Project 10", participant: "Jeanette Schweiger", creator: "Student project", session: "2026", html: "./project-10.html", png: "./src/flower.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Ilvy Anik Frommelt", projectName: "Project 11", participant: "Ilvy Anik Frommelt", creator: "Student project", session: "2026", html: "./project-11.html", png: "./src/aspirin.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "Student project", creator: "Student project", session: "2026", html: "./project-13.html", png: "./src/luftballon.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Raffaella Lanza", creator: "Raffaella Lanza", session: "2026", html: "./draw-something.html", png: "./src/yellow_rabbit.png", screenshot: "./src/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
+
+      ];
+
+      // Replace these example response arrays with class data. Each value is one response from 0 (left pole) to 100 (right pole).
+      const classQuestions = [
+        {
+          question: "How does AI affect your creativity?",
+          leftPole: "AI limits my creativity.",
+          rightPole: "AI enhances my creativity.",
+          before: [43, 48, 51, 56, 59, 62, 54, 47, 58, 64, 52, 60],
+          after: [48, 54, 58, 63, 66, 70, 61, 52, 68, 73, 57, 65]
+        },
+        {
+          question: "Does AI create more opportunities or problems?",
+          leftPole: "AI creates more opportunities than problems.",
+          rightPole: "AI creates more problems than opportunities.",
+          before: [24, 31, 39, 43, 48, 52, 35, 44, 57, 61, 41, 50],
+          after: [28, 34, 42, 46, 52, 55, 39, 48, 60, 63, 45, 54]
+        },
+        {
+          question: "How does AI make you feel about the future?",
+          leftPole: "AI makes me pessimistic about the future.",
+          rightPole: "AI makes me optimistic about the future.",
+          before: [18, 24, 29, 35, 39, 42, 26, 33, 45, 51, 31, 40],
+          after: [23, 30, 35, 43, 47, 51, 33, 40, 53, 58, 39, 48]
+        }
+      ];
+
+      items.forEach(item => {
+        if (!item.participant) {
+          item.participant = {
+            "Christopher Fritz Siebenhaar": "Christopher Fritz Siebenhaar",
+            "Nastasia Dabringhaus": "Nastasia Dabringhaus"
+          }[item.title] || item.title;
+        }
+      });
+
+      function getTitleBounds() {
+        const titleRect = siteTitle.getBoundingClientRect();
+        const desktopRect = desktop.getBoundingClientRect();
+        const padding = 12;
+        return {
+          x: titleRect.left - desktopRect.left + desktop.scrollLeft - padding,
+          y: titleRect.top - desktopRect.top + desktop.scrollTop - padding,
+          width: titleRect.width + padding * 2,
+          height: titleRect.height + padding * 2
+        };
+      }
+
+      function overlaps(first, second) {
+        return first.x < second.x + second.width &&
+          first.x + first.width > second.x &&
+          first.y < second.y + second.height &&
+          first.y + first.height > second.y;
+      }
+
+      function setNodePosition(node, x, y) {
+        const maxX = Math.max(0, desktop.scrollWidth - node.offsetWidth);
+        const maxY = Math.max(0, desktop.scrollHeight - node.offsetHeight);
+        const nextX = Math.max(0, Math.min(x, maxX));
+        const nextY = Math.max(0, Math.min(y, maxY));
+        if (overlaps({
+          x: nextX,
+          y: nextY,
+          width: node.offsetWidth,
+          height: node.offsetHeight
+        }, getTitleBounds())) return false;
+        node.style.left = `${nextX}px`;
+        node.style.top = `${nextY}px`;
+        node.dataset.x = String(nextX);
+        node.dataset.y = String(nextY);
+        return true;
+      }
+
+      function layoutNodes() {
+        const width = desktop.clientWidth;
+        const compact = window.matchMedia("(max-width: 560px)").matches;
+        const baseNodeWidth = compact ? 112 : 138;
+        const gap = 18;
+        nodes.forEach((node, index) => {
+          const item = items[index];
+          const savedSize = localStorage.getItem(`project-image-size:${item.html}`);
+          const configuredSize = savedSize === null ? item.pngSize : Number(savedSize);
+          applyThumbnailSize(node, item, Number.isFinite(configuredSize) ? configuredSize : 74, false);
+        });
+        const nodeWidth = Math.max(...nodes.map(node => node.offsetWidth));
+        const nodeHeight = Math.max(...nodes.map(node => node.offsetHeight));
+        const columns = Math.max(1, Math.floor((width - 24) / (nodeWidth + gap)));
+        const rows = Math.ceil(nodes.length / columns);
+        desktop.style.minHeight = `${Math.max(desktop.clientHeight, rows * (nodeHeight + gap) + 60)}px`;
+        const canvasHeight = desktop.scrollHeight;
+
+        const indices = items.map((_, index) => index);
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [indices[i], indices[j]] = [indices[j], indices[i]];
+        }
+
+        const placed = [getTitleBounds()];
+        const hasSpace = (x, y, node) => placed.every(position =>
+          x + node.offsetWidth + 10 <= position.x ||
+          position.x + position.width + 10 <= x ||
+          y + node.offsetHeight + 10 <= position.y ||
+          position.y + position.height + 10 <= y
+        );
+
+        indices.forEach((itemIndex, position) => {
+          const node = nodes[itemIndex];
+          const maxX = Math.max(0, width - node.offsetWidth - 8);
+          const maxY = Math.max(38, canvasHeight - node.offsetHeight - 8);
+          let point = null;
+
+          for (let attempt = 0; attempt < 160; attempt++) {
+            const x = Math.floor(Math.random() * (maxX + 1));
+            const y = 38 + Math.floor(Math.random() * (maxY - 38 + 1));
+            if (hasSpace(x, y, node)) {
+              point = { x, y };
+              break;
+            }
+          }
+
+          if (!point) {
+            for (let slot = 0; slot < nodes.length; slot++) {
+              const x = 12 + (slot % columns) * (nodeWidth + gap);
+              const y = 40 + Math.floor(slot / columns) * (nodeHeight + gap);
+              if (hasSpace(x, y, node)) {
+                point = { x, y };
+                break;
+              }
+            }
+          }
+
+          if (point) {
+            setNodePosition(node, point.x, point.y);
+            placed.push({
+              x: point.x,
+              y: point.y,
+              width: node.offsetWidth,
+              height: node.offsetHeight
+            });
+          }
+        });
+      }
+
+      function applyThumbnailSize(node, item, size, persist = true) {
+        const pngSize = Math.max(32, Math.min(Math.round(size), 180));
+        item.pngSize = pngSize;
+        node.style.setProperty("--png-size", `${pngSize}px`);
+        node.style.width = `${Math.max(
+          window.matchMedia("(max-width: 560px)").matches ? 112 : 138,
+          pngSize + 12
+        )}px`;
+        node.dataset.pngSize = String(pngSize);
+        if (persist) localStorage.setItem(`project-image-size:${item.html}`, String(pngSize));
+        return pngSize;
+      }
+
+      function closeContextMenu() {
+        document.querySelectorAll(".context-menu").forEach(menu => menu.remove());
+      }
+
+      function openWindow(windowTitle, content, item = null) {
+        closeContextMenu();
+        activeItem = item;
+        title.textContent = windowTitle;
+        viewport.replaceChildren(content);
+        panel.classList.remove("maximized");
+        panel.style.left = "";
+        panel.style.top = "";
+        panel.style.transform = "";
+        maximizeButton.setAttribute("aria-label", "Maximize window");
+        backdrop.hidden = false;
+        shell.hidden = false;
+        closeButton.focus();
+      }
+
+      function closeWindow() {
+        shell.hidden = true;
+        backdrop.hidden = true;
+        viewport.replaceChildren();
+        panel.classList.remove("maximized");
+        panel.style.left = "";
+        panel.style.top = "";
+        activeItem = null;
+        desktop.focus({ preventScroll: true });
+      }
+
+      function openAbout() {
+        const content = document.createElement("article");
+        content.className = "about-content";
+        content.innerHTML = `
+          <h2>What do we do now? — Class Archive</h2>
+          <p>From 2 to 6 November 2026, 13 students from KISD – Köln International School of Design – took part in the short-term project WHAT DO WE DO NOW? CRITICAL PRACTICE IN DEALING WITH INTELLIGENT SYSTEMS, led by Charlie Singer-Fischer. Through critical discussions, research and hands-on experiments, the course explored how AI systems shape design, society and professional practice. Rather than focusing on learning specific tools, the students explored AI tools as spaces that can be actively shaped, questioned and reimagined through design. The week concluded with a collaborative digital format sharing their findings, experiments and readings. Each desktop item is a place for a student's work to live and be explored.</p>
+          <p>Choose an item to read its description and view its screenshot. Use its <strong>Socials</strong> menu to open links, or the <strong>Thumbnail size</strong> slider to resize its desktop image. Use <strong>List</strong> to browse the collection, <strong>Questions</strong> to jump to the interactive barometers below, or <strong>Shuffle</strong> to rearrange the desktop.</p>
+          `;
+        openWindow("About — Class Archive", content);
+      }
+
+      function renderQuestions() {
+        const content = document.getElementById("questions-content");
+        content.replaceChildren();
+
+        classQuestions.forEach((question, index) => {
+          const card = document.createElement("article");
+          card.className = "question-card";
+          const heading = document.createElement("h2");
+          heading.textContent = `${index + 1}. ${question.question}`;
+          const pair = document.createElement("div");
+          pair.className = "barometer-pair";
+          const movingDots = [];
+
+          const makeDot = (position, responseIndex, kind) => {
+            const dot = document.createElement("span");
+            dot.className = `answer-dot${kind === "after" ? " after" : ""}`;
+            dot.style.left = `${37 + position * 0.26}%`;
+            dot.style.top = `calc(50% + ${((responseIndex * 17) % 39) - 19}px)`;
+            dot.title = `${kind === "after" ? "After" : "Before"} response ${responseIndex + 1}: ${position}%`;
+            dot.setAttribute("aria-hidden", "true");
+            return dot;
+          };
+
+          const panelElement = document.createElement("section");
+          panelElement.className = "barometer-panel";
+          panelElement.setAttribute("aria-label", `Barometer for ${question.question}`);
+          const panelTitle = document.createElement("span");
+          panelTitle.className = "barometer-panel-title";
+          panelTitle.textContent = "Barometer";
+          const board = document.createElement("div");
+          board.className = "barometer-board";
+          const leftPole = document.createElement("span");
+          leftPole.className = "pole-note left";
+          leftPole.textContent = question.leftPole;
+          const rightPole = document.createElement("span");
+          rightPole.className = "pole-note right";
+          rightPole.textContent = question.rightPole;
+          board.append(leftPole, rightPole);
+          question.before.forEach((position, responseIndex) => {
+            board.appendChild(makeDot(position, responseIndex, "before"));
+          });
+          question.after.forEach((position, responseIndex) => {
+            const dot = makeDot(question.before[responseIndex] ?? position, responseIndex, "after");
+            dot.style.opacity = "0";
+            board.appendChild(dot);
+            movingDots.push({ dot, before: question.before[responseIndex] ?? position, after: position });
+          });
+          const legend = document.createElement("div");
+          legend.className = "barometer-legend";
+          const legendItem = (colorClass, text) => {
+            const item = document.createElement("span");
+            item.className = "legend-item";
+            const dot = document.createElement("span");
+            dot.className = `legend-dot${colorClass ? ` ${colorClass}` : ""}`;
+            dot.setAttribute("aria-hidden", "true");
+            item.append(dot, document.createTextNode(text));
+            return item;
+          };
+          legend.append(legendItem("", "Before"), legendItem("after", "After"));
+          panelElement.append(panelTitle, board, legend);
+          pair.appendChild(panelElement);
+          const transition = document.createElement("label");
+          transition.className = "transition-control";
+          const beforeLabel = document.createElement("span");
+          beforeLabel.textContent = "Before";
+          const slider = document.createElement("input");
+          slider.className = "transition-slider";
+          slider.type = "range";
+          slider.min = "0";
+          slider.max = "100";
+          slider.value = "0";
+          slider.setAttribute("aria-label", `Transition responses for ${question.question} from before to after`);
+          const afterLabel = document.createElement("span");
+          afterLabel.textContent = "After";
+          const reading = document.createElement("output");
+          reading.className = "transition-reading";
+          reading.textContent = "Before";
+          slider.addEventListener("input", () => {
+            const progress = Number(slider.value) / 100;
+            movingDots.forEach(({ dot, before, after: afterPosition }, responseIndex) => {
+              const position = before + (afterPosition - before) * progress;
+              dot.style.left = `${37 + position * 0.26}%`;
+              dot.style.opacity = String(progress);
+              dot.title = `Response ${responseIndex + 1}: ${Math.round(position)}%`;
+            });
+            reading.textContent = progress === 0
+              ? "Before"
+              : progress === 1
+                ? "After"
+                : `${slider.value}%`;
+          });
+          transition.append(beforeLabel, slider, afterLabel, reading);
+          card.append(heading, pair, transition);
+          content.appendChild(card);
+        });
+      }
+
+      function openList() {
+        const wrapper = document.createElement("div");
+        wrapper.className = "list-window";
+        const header = document.createElement("div");
+        header.className = "list-header";
+        const rows = document.createElement("div");
+        rows.className = "list-rows";
+        wrapper.append(header, rows);
+
+        const columns = [
+          ["title", "Name"],
+          ["participant", "Participant"],
+          ["session", "Session"]
+        ];
+        columns.forEach(([key, label]) => {
+          const button = document.createElement("button");
+          button.className = `sort-button ${key}`;
+          button.type = "button";
+          button.textContent = label;
+          button.addEventListener("click", () => {
+            if (sortKey === key) sortAscending = !sortAscending;
+            else {
+              sortKey = key;
+              sortAscending = true;
+            }
+            renderRows();
+          });
+          header.appendChild(button);
+        });
+
+        function renderRows() {
+          rows.replaceChildren();
+          const sorted = [...items].sort((a, b) => {
+            const comparison = a[sortKey].localeCompare(b[sortKey], undefined, { numeric: true });
+            return sortAscending ? comparison : -comparison;
+          });
+          sorted.forEach(item => {
+            const row = document.createElement("button");
+            row.type = "button";
+            row.className = "list-row";
+            const name = document.createElement("span");
+            name.textContent = item.title;
+            const participant = document.createElement("span");
+            participant.textContent = item.participant;
+            const session = document.createElement("span");
+            session.className = "session";
+            session.textContent = item.session;
+            row.append(name, participant, session);
+            row.addEventListener("click", () => openDescription(item));
+            rows.appendChild(row);
+          });
+          header.querySelectorAll(".sort-button").forEach(button => {
+            const key = button.classList.contains("title") ? "title" :
+              button.classList.contains("participant") ? "participant" : "session";
+            button.textContent = columns.find(column => column[0] === key)[1] +
+              (sortKey === key ? (sortAscending ? " ▲" : " ▼") : "");
+          });
+        }
+
+        renderRows();
+        openWindow("Projects — List", wrapper);
+      }
+
+      function showContextMenu(node, event) {
+        closeContextMenu();
+        const item = items[Number(node.dataset.index)];
+        const menu = document.createElement("div");
+        menu.className = "context-menu";
+        menu.setAttribute("role", "menu");
+        const bounds = node.getBoundingClientRect();
+        menu.style.left = `${Math.min(event.clientX || bounds.left, innerWidth - 192)}px`;
+        menu.style.top = `${Math.min(event.clientY || bounds.bottom, innerHeight - 100)}px`;
+
+        const descriptionButton = document.createElement("button");
+        descriptionButton.type = "button";
+        descriptionButton.setAttribute("role", "menuitem");
+        descriptionButton.textContent = "View Description";
+        descriptionButton.addEventListener("click", () => openDescription(item));
+        menu.appendChild(descriptionButton);
+
+        const socialsEntry = document.createElement("div");
+        socialsEntry.className = "socials-entry";
+        const socialsButton = document.createElement("button");
+        socialsButton.className = "socials-toggle";
+        socialsButton.type = "button";
+        socialsButton.setAttribute("role", "menuitem");
+        socialsButton.setAttribute("aria-haspopup", "true");
+        socialsButton.setAttribute("aria-expanded", "false");
+        socialsButton.textContent = "Socials ▸";
+        const socialsMenu = document.createElement("div");
+        socialsMenu.className = "socials-submenu";
+        socialsMenu.setAttribute("role", "menu");
+
+        const socials = Array.isArray(item.socials) ? item.socials : [];
+        if (socials.length === 0) {
+          const empty = document.createElement("span");
+          empty.className = "socials-empty";
+          empty.textContent = "No social links added";
+          socialsMenu.appendChild(empty);
+        } else {
+          socials.forEach(social => {
+            const label = String(social.label || social.url || "Social link");
+            let href = "";
+            try {
+              const parsedUrl = new URL(social.url, window.location.href);
+              if (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") {
+                href = parsedUrl.href;
+              }
+            } catch {
+              href = "";
+            }
+
+            if (!href) {
+              const invalid = document.createElement("span");
+              invalid.className = "socials-empty";
+              invalid.textContent = `${label}: invalid URL`;
+              socialsMenu.appendChild(invalid);
+              return;
+            }
+
+            const link = document.createElement("a");
+            link.className = "socials-link";
+            link.href = href;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.title = href;
+            link.setAttribute("role", "menuitem");
+            const linkLabel = document.createElement("span");
+            linkLabel.textContent = label;
+            link.append(linkLabel);
+            socialsMenu.appendChild(link);
+          });
+        }
+
+        const positionSocialsMenu = () => {
+          socialsEntry.classList.add("is-open");
+          socialsButton.setAttribute("aria-expanded", "true");
+          const entryBounds = socialsEntry.getBoundingClientRect();
+          const submenuBounds = socialsMenu.getBoundingClientRect();
+          const opensLeft = entryBounds.right + submenuBounds.width + 4 > innerWidth;
+          socialsMenu.style.left = `${opensLeft
+            ? Math.max(4, entryBounds.left - submenuBounds.width - 4)
+            : entryBounds.right + 4}px`;
+          socialsMenu.style.top = `${Math.max(4, Math.min(entryBounds.top, innerHeight - submenuBounds.height - 4))}px`;
+        };
+
+        socialsButton.addEventListener("pointerenter", positionSocialsMenu);
+        socialsButton.addEventListener("focus", positionSocialsMenu);
+        socialsButton.addEventListener("click", positionSocialsMenu);
+        socialsEntry.addEventListener("pointerleave", event => {
+          if (event.pointerType === "touch" || socialsEntry.contains(event.relatedTarget)) return;
+          socialsEntry.classList.remove("is-open");
+          socialsButton.setAttribute("aria-expanded", "false");
+        });
+        socialsEntry.append(socialsButton, socialsMenu);
+        menu.appendChild(socialsEntry);
+
+        const resize = document.createElement("label");
+        resize.className = "thumbnail-resize";
+        const resizeLabel = document.createElement("span");
+        resizeLabel.textContent = "Thumbnail size";
+        const resizeValue = document.createElement("output");
+        resizeValue.textContent = `${node.dataset.pngSize}px`;
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = "32";
+        slider.max = "180";
+        slider.step = "2";
+        slider.value = node.dataset.pngSize || "74";
+        slider.setAttribute("aria-label", `Thumbnail size for ${item.title}`);
+        slider.addEventListener("input", () => {
+          resizeValue.textContent = `${applyThumbnailSize(node, item, Number(slider.value))}px`;
+        });
+        resize.append(resizeLabel, resizeValue, slider);
+        menu.appendChild(resize);
+        document.body.appendChild(menu);
+        menu.style.left = `${Math.max(4, Math.min(event.clientX || bounds.left, innerWidth - menu.offsetWidth - 4))}px`;
+        menu.style.top = `${Math.max(4, Math.min(event.clientY || bounds.bottom, innerHeight - menu.offsetHeight - 4))}px`;
+        descriptionButton.focus();
+      }
+
+      function openDescription(item) {
+        const content = document.createElement("article");
+        content.className = "wip-content";
+        const projectTitle = document.createElement("h2");
+        projectTitle.textContent = item.title;
+        const projectLink = document.createElement("a");
+        projectLink.className = "description-project-link";
+        projectLink.href = item.html;
+        projectLink.target = "_blank";
+        projectLink.rel = "noopener noreferrer";
+        projectLink.textContent = "Open project ↗";
+
+        const badge = document.createElement("span");
+        badge.className = "wip-badge";
+        badge.textContent = `Project name / ${item.projectName || item.title}`;
+        const details = document.createElement("p");
+        const participant = document.createElement("span");
+        participant.textContent = item.participant;
+        const session = document.createElement("span");
+        session.textContent = item.session;
+        details.append("Participant: ", participant, document.createElement("br"), "Session: ", session);
+        const description = document.createElement("p");
+        description.textContent = item.description;
+        content.append(badge, projectTitle, details, description, projectLink);
+
+        const screenshot = document.createElement("figure");
+        screenshot.className = "description-screenshot";
+        const image = document.createElement("img");
+        const thumbnailPath = item.png || "./src/yellow_rabbit.png";
+        image.src = item.screenshot || thumbnailPath;
+        image.alt = `Screenshot of ${item.title}`;
+        image.addEventListener("error", () => {
+          if (image.src !== new URL(thumbnailPath, window.location.href).href) {
+            image.src = thumbnailPath;
+          } else {
+            screenshot.remove();
+          }
+        });
+        screenshot.append(image);
+        content.appendChild(screenshot);
+        openWindow(`${item.title} — Description`, content, item);
+      }
+
+      function makeNode(item, index) {
+        const node = document.createElement("button");
+        node.type = "button";
+        node.className = "desktop-node";
+        node.dataset.index = String(index);
+        node.dataset.pngSize = String(item.pngSize ?? 74);
+        node.setAttribute("aria-label", `${item.title}, ${item.projectName || "Project name"}`);
+
+        const image = document.createElement("img");
+        image.src = item.png || "./src/yellow_rabbit.png";
+        image.alt = "";
+        image.draggable = false;
+        image.addEventListener("error", () => {
+          image.src = "./src/yellow_rabbit.png";
+        }, { once: true });
+        node.appendChild(image);
+
+        const label = document.createElement("span");
+        label.className = "node-label";
+        label.textContent = item.title;
+        const creator = document.createElement("span");
+        creator.className = "node-creator";
+        creator.textContent = item.projectName || "Project name";
+        node.append(label, creator);
+
+        node.addEventListener("pointerdown", event => {
+          if (event.button !== 0) return;
+          node.setPointerCapture(event.pointerId);
+          dragState = {
+            node,
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            originX: Number(node.dataset.x || 0),
+            originY: Number(node.dataset.y || 0),
+            moved: false
+          };
+        });
+
+        node.addEventListener("pointermove", event => {
+          if (!dragState || dragState.node !== node || dragState.pointerId !== event.pointerId) return;
+          const deltaX = event.clientX - dragState.startX;
+          const deltaY = event.clientY - dragState.startY;
+          if (Math.abs(deltaX) + Math.abs(deltaY) > 5) dragState.moved = true;
+          if (dragState.moved) setNodePosition(node, dragState.originX + deltaX, dragState.originY + deltaY);
+        });
+
+        node.addEventListener("pointerup", event => {
+          if (!dragState || dragState.node !== node || dragState.pointerId !== event.pointerId) return;
+          const didMove = dragState.moved;
+          dragState = null;
+          if (didMove) {
+            node.dataset.dragged = "true";
+            setTimeout(() => delete node.dataset.dragged, 0);
+          }
+        });
+
+        node.addEventListener("click", event => {
+          if (node.dataset.dragged === "true") {
+            event.preventDefault();
+            return;
+          }
+          nodes.forEach(other => other.classList.toggle("selected", other === node));
+          showContextMenu(node, event);
+        });
+
+        node.addEventListener("contextmenu", event => {
+          event.preventDefault();
+          nodes.forEach(other => other.classList.toggle("selected", other === node));
+          showContextMenu(node, event);
+        });
+        return node;
+      }
+
+      items.forEach((item, index) => {
+        const node = makeNode(item, index);
+        nodes.push(node);
+        desktop.appendChild(node);
+      });
+
+      desktop.tabIndex = -1;
+      layoutNodes();
+      renderQuestions();
+      window.addEventListener("resize", () => layoutNodes());
+
+      document.getElementById("about-button").addEventListener("click", openAbout);
+      document.getElementById("list-button").addEventListener("click", openList);
+      document.getElementById("questions-button").addEventListener("click", () => {
+        if (!shell.hidden) closeWindow();
+        document.getElementById("questions-section").scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          block: "start"
+        });
+      });
+      document.getElementById("shuffle-button").addEventListener("click", () => {
+        closeContextMenu();
+        layoutNodes();
+      });
+      closeButton.addEventListener("click", closeWindow);
+      maximizeButton.addEventListener("click", () => {
+        panel.classList.toggle("maximized");
+        maximizeButton.setAttribute(
+          "aria-label",
+          panel.classList.contains("maximized") ? "Restore window" : "Maximize window"
+        );
+      });
+      backdrop.addEventListener("click", closeWindow);
+      document.addEventListener("click", event => {
+        if (!event.target.closest(".context-menu") && !event.target.closest(".desktop-node")) {
+          closeContextMenu();
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          if (!shell.hidden) closeWindow();
+          closeContextMenu();
+        }
+      });
+
+      titlebar.addEventListener("pointerdown", event => {
+        if (event.target.closest("button") || panel.classList.contains("maximized")) return;
+        const rect = panel.getBoundingClientRect();
+        dragState = {
+          window: true,
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          originX: rect.left,
+          originY: rect.top
+        };
+        panel.style.left = `${rect.left}px`;
+        panel.style.top = `${rect.top}px`;
+        panel.style.transform = "none";
+        titlebar.setPointerCapture(event.pointerId);
+      });
+
+      titlebar.addEventListener("pointermove", event => {
+        if (!dragState?.window || dragState.pointerId !== event.pointerId) return;
+        const x = dragState.originX + event.clientX - dragState.startX;
+        const y = dragState.originY + event.clientY - dragState.startY;
+        const maxX = window.innerWidth - panel.offsetWidth;
+        const maxY = window.innerHeight - panel.offsetHeight - 42;
+        panel.style.left = `${Math.max(0, Math.min(x, maxX))}px`;
+        panel.style.top = `${Math.max(0, Math.min(y, maxY))}px`;
+      });
+
+      titlebar.addEventListener("pointerup", event => {
+        if (dragState?.window && dragState.pointerId === event.pointerId) dragState = null;
+      });
+    })();
+  </script>
+</body>
+</html>
