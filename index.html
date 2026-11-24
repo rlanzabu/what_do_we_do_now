@@ -27,7 +27,7 @@
 
     @font-face {
       font-family: "Dauphine";
-      src: url("./src/Dauphine%20Regular.otf") format("opentype");
+      src: url("./assets/fonts/Dauphine%20Regular.otf") format("opentype");
       font-style: normal;
       font-weight: 400;
       font-display: swap;
@@ -59,7 +59,7 @@
       overflow: hidden;
       background-color: #111;
       background-image:
-        url("./src/cirrus_cloud_white.jpg"),
+        url("./assets/images/cirrus_cloud_white.jpg"),
         linear-gradient(135deg, #26303a, #101116 72%);
       background-position: center center, center;
       background-size: cover, cover;
@@ -415,7 +415,7 @@
       border-top: 2px solid rgb(255 255 255 / 28%);
       background-color: #111;
       background-image:
-        url("./src/cirrus_cloud_white.jpg"),
+        url("./assets/images/cirrus_cloud_white.jpg"),
         linear-gradient(135deg, #26303a, #101116 72%);
       background-position: center center, center;
       background-size: cover, cover;
@@ -820,19 +820,19 @@
       // Set pngSize in pixels to resize an individual thumbnail; it defaults to 74.
       // Edit `projectName`, `participant`, and `progress` independently for each project.
       const items = [
-        { title: "Sina Tatjana Bolder", projectName: "Project 01", participant: "KISD student", creator: "KISD student", session: "2026", html: "./project-01.html", png: "./src/2000_folder.gif", screenshot: "./src/2000_folder.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Marta Alves", projectName: "Project 02", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-02.html", png: "./src/cutie.gif", screenshot: "./src/cutie.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Christopher Fritz Siebenhaar", projectName: "AI, Ai, ai… Does the AI love me back? <3",participant: "KISD student", creator: "Student project", session: "2026", html: "./project-03.html", png: "./src/ai_fortune.png", screenshot: "./src/Christopher_Siebenhaar_Tool_Daisy.png", description: "A wheel of fortune, a percentage calculator, and a daisy whose torn petals you pluck one by one until the verdict lands: “It loves me” or “It loves me not”. AI, Ai, ai… Does the AI love me back? is a web tool for anyone who has ever wondered whether their favorite chatbot feels the same way. Instead of one answer, it offers three ways to find out. Every method is part science, part superstition, and entirely unscientific. The perfect bridge between lovesick ritual and machine logic, a little joke about asking software for reassurance. </3.", socials: [{ label: "christopher.sbh", url: "https://www.instagram.com/christopher.sbh/" }], progress: "in progress", status: "wip" },
-        { title: "Lara Marie Schiefer", projectName: "Project 04", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-04.html", png: "./src/Disaster-girl.jpg", screenshot: "./src/falling_bart.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Nastasia Dabringhaus", projectName: "Value Bridge – The Process Receipt", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-05.html", png: "./src/value-bridge-icon.png", screenshot: "./src/value-bridge-icon.png", description: "Value Bridge helps designers price a finished project fairly when the client only sees hours or deliverables. Instead of one lump sum, the work is split into five process building blocks (Discovery, Framing, Facilitation, Relationship & process work, Reflection), each translated into market language such as “Strategy” or “Stakeholder management”. For every block you enter what the client actually sees, the visible hours, and what share of the whole work that is. The tool calculates the work hidden behind it and prints everything as a thermal-paper receipt: visible to client, behind it, total. You can add your own services, switch blocks on or off, and download the receipt as a 1080 x 1350 PNG. A “Sources & numbers” panel lists the research behind the logic, including caveats. Value Bridge is a bridge between market logic and transformative design practice: it makes invisible process work legible, countable and payable.", socials: [{ label: "LinkedIn: Nastasia Dabringhaus", url: "https://www.linkedin.com/search/results/people/?keywords=Nastasia%20Dabringhaus" }], progress: "in progress", status: "wip" },
-        { title: "Meike Raupach", projectName: "Project 06", participant: "KISD student", creator: "Student project", session: "2026", html: "./project-06.html", png: "./src/bot.png", screenshot: "./src/bot.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Hannah Shirin Tempel", projectName: "Project 07", participant: "Hannah Shirin Tempel", creator: "Student project", session: "2026", html: "./project-07.html", png: "./src/august_bust.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Lou Rosa Sternebeck", projectName: "Project 08", participant: "Lou Rosa Sternebeck", creator: "Student project", session: "2026", html: "./project-08.html", png: "./src/2000_folder.gif", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "Aliaksandra Kraskouskaya", creator: "Student project", session: "2026", html: "./project-09.html", png: "./src/angel.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Jeanette Schweiger", projectName: "Project 10", participant: "Jeanette Schweiger", creator: "Student project", session: "2026", html: "./project-10.html", png: "./src/flower.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Ilvy Anik Frommelt", projectName: "Project 11", participant: "Ilvy Anik Frommelt", creator: "Student project", session: "2026", html: "./project-11.html", png: "./src/aspirin.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "Student project", creator: "Student project", session: "2026", html: "./project-13.html", png: "./src/luftballon.png", screenshot: "./src/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Raffaella Lanza", creator: "Raffaella Lanza", session: "2026", html: "./draw-something.html", png: "./src/yellow_rabbit.png", screenshot: "./src/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
+        { title: "Sina Tatjana Bolder", projectName: "Project 01", participant: "KISD student", creator: "KISD student", session: "2026", html: "./projects/project-01.html", png: "./assets/thumbnails/2000_folder.gif", screenshot: "./assets/screenshots/2000_folder.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Marta Alves", projectName: "Project 02", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/Type_in_Motion.html", png: "./assets/thumbnails/what-do-we-do-now-2.gif", screenshot: "./assets/screenshots/cutie.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Christopher Fritz Siebenhaar", projectName: "AI, Ai, ai… Does the AI love me back? <3",participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-03.html", png: "./assets/thumbnails/ai_fortune.png", screenshot: "./assets/screenshots/Christopher_Siebenhaar_Tool_Daisy.png", description: "A wheel of fortune, a percentage calculator, and a daisy whose torn petals you pluck one by one until the verdict lands: “It loves me” or “It loves me not”. AI, Ai, ai… Does the AI love me back? is a web tool for anyone who has ever wondered whether their favorite chatbot feels the same way. Instead of one answer, it offers three ways to find out. Every method is part science, part superstition, and entirely unscientific. The perfect bridge between lovesick ritual and machine logic, a little joke about asking software for reassurance. </3.", socials: [{ label: "christopher.sbh", url: "https://www.instagram.com/christopher.sbh/" }], progress: "in progress", status: "wip" },
+        { title: "Lara Marie Schiefer", projectName: "Project 04", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-04.html", png: "./assets/thumbnails/Disaster-Girl.jpg", screenshot: "./assets/screenshots/falling_bart.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Nastasia Dabringhaus", projectName: "Value Bridge – The Process Receipt", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-05.html", png: "./assets/thumbnails/value-bridge-icon.png", screenshot: "./assets/screenshots/value-bridge-icon.png", description: "Value Bridge helps designers price a finished project fairly when the client only sees hours or deliverables. Instead of one lump sum, the work is split into five process building blocks (Discovery, Framing, Facilitation, Relationship & process work, Reflection), each translated into market language such as “Strategy” or “Stakeholder management”. For every block you enter what the client actually sees, the visible hours, and what share of the whole work that is. The tool calculates the work hidden behind it and prints everything as a thermal-paper receipt: visible to client, behind it, total. You can add your own services, switch blocks on or off, and download the receipt as a 1080 x 1350 PNG. A “Sources & numbers” panel lists the research behind the logic, including caveats. Value Bridge is a bridge between market logic and transformative design practice: it makes invisible process work legible, countable and payable.", socials: [{ label: "LinkedIn: Nastasia Dabringhaus", url: "https://www.linkedin.com/search/results/people/?keywords=Nastasia%20Dabringhaus" }], progress: "in progress", status: "wip" },
+        { title: "Meike Raupach", projectName: "Project 06", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-06.html", png: "./assets/thumbnails/bot.png", screenshot: "./assets/screenshots/bot.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Hannah Shirin Tempel", projectName: "Project 07", participant: "Hannah Shirin Tempel", creator: "Student project", session: "2026", html: "./projects/project-07.html", png: "./assets/thumbnails/august_bust.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Lou Rosa Sternebeck", projectName: "Project 08", participant: "Lou Rosa Sternebeck", creator: "Student project", session: "2026", html: "./projects/project-08.html", png: "./assets/thumbnails/2000_folder.gif", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "Aliaksandra Kraskouskaya", creator: "Student project", session: "2026", html: "./projects/project-09.html", png: "./assets/thumbnails/angel.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Jeanette Schweiger", projectName: "Project 10", participant: "Jeanette Schweiger", creator: "Student project", session: "2026", html: "./projects/project-10.html", png: "./assets/thumbnails/flower.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Ilvy Anik Frommelt", projectName: "Project 11", participant: "Ilvy Anik Frommelt", creator: "Student project", session: "2026", html: "./projects/project-11.html", png: "./assets/thumbnails/aspirin.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "Student project", creator: "Student project", session: "2026", html: "./projects/project-13.html", png: "./assets/thumbnails/luftballon.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Raffaella Lanza", creator: "Raffaella Lanza", session: "2026", html: "./projects/draw-something.html", png: "./assets/thumbnails/cutie.gif", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
 
       ];
 
@@ -1337,7 +1337,7 @@
         const screenshot = document.createElement("figure");
         screenshot.className = "description-screenshot";
         const image = document.createElement("img");
-        const thumbnailPath = item.png || "./src/yellow_rabbit.png";
+        const thumbnailPath = item.png || "./assets/thumbnails/yellow_rabbit.png";
         image.src = item.screenshot || thumbnailPath;
         image.alt = `Screenshot of ${item.title}`;
         image.addEventListener("error", () => {
@@ -1361,11 +1361,11 @@
         node.setAttribute("aria-label", `${item.title}, ${item.projectName || "Project name"}`);
 
         const image = document.createElement("img");
-        image.src = item.png || "./src/yellow_rabbit.png";
+        image.src = item.png || "./assets/thumbnails/yellow_rabbit.png";
         image.alt = "";
         image.draggable = false;
         image.addEventListener("error", () => {
-          image.src = "./src/yellow_rabbit.png";
+          image.src = "./assets/thumbnails/yellow_rabbit.png";
         }, { once: true });
         node.appendChild(image);
 
