@@ -401,6 +401,15 @@
 
     .materials-content h2 { margin: 0 0 8px; }
 
+    .imprint-frame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      border: 0;
+      background: var(--white);
+    }
+
     .materials-content p {
       margin: 0 0 16px;
       color: #444;
@@ -507,8 +516,12 @@
     }
 
     .about-content {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
       max-width: 610px;
-      margin: 8px auto;
+      margin: 0 auto;
+      padding: 8px 0;
       font-size: 14px;
       line-height: 1.55;
     }
@@ -519,6 +532,14 @@
     }
 
     .about-content p { margin: 0 0 14px; }
+
+    .about-content .about-credit {
+      margin: auto 0 0;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-mid);
+      color: var(--muted);
+      font-size: 11px;
+    }
 
     .questions-content {
       max-width: 1000px;
@@ -934,6 +955,9 @@
       <button id="shuffle-button" class="task-btn" type="button" aria-label="Shuffle project layout">
         <span class="task-icon" aria-hidden="true">⇄</span><span class="task-name">Shuffle</span>
       </button>
+      <button id="imprint-button" class="task-btn" type="button" aria-label="Imprint">
+        <span class="task-icon" aria-hidden="true">§</span><span class="task-name">Imprint</span>
+      </button>
     </div>
     <span class="taskbar-title">What Do We Do Now? — Class Archive</span>
   </footer>
@@ -967,14 +991,14 @@
         { title: "Christopher Fritz Siebenhaar", projectName: "AI, Ai, ai… Does the AI love me back? <3",participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/ai_fortune.html", png: "./assets/thumbnails/Logo.png", screenshot: "./assets/screenshots/Christopher_Siebenhaar_Tool_Daisy.png", description: "A wheel of fortune, a percentage calculator, and a daisy whose torn petals you pluck one by one until the verdict lands: “It loves me” or “It loves me not”. AI, Ai, ai… Does the AI love me back? is a web tool for anyone who has ever wondered whether their favorite chatbot feels the same way. Instead of one answer, it offers three ways to find out. Every method is part science, part superstition, and entirely unscientific. The perfect bridge between lovesick ritual and machine logic, a little joke about asking software for reassurance. </3.", socials: [{ label: "christopher.sbh", url: "https://www.instagram.com/christopher.sbh/" }], progress: "in progress", status: "wip" },
         { title: "Lara Marie Schiefer", projectName: "Dog Ear", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-04.html", png: "./assets/thumbnails/Disaster-Girl.jpg", screenshot: "./assets/screenshots/falling_bart.png", description: "Never again forget what you read! Dog-Ear is your highlighter’s best friend. Snap a photo of the page you marked, upload your highlighted parts, and get a summary of what you read in one short sentence, plus the quote word for word with its page number. No more flipping through your books to find that one line! All the parts of your books that you highlighted now live in one place, so you can easily look them up. Everything is thematically sorted by book, chapter and topic, with a table of contents that jumps straight to each note, and a search box that finds any word across your whole library. Compare the photo with the text side by side, fix a detail if needed, and save. Your notes stay safely in your browser, and it comes in soft green with a dark mode for late-night reading sessions. ", socials: [], progress: "in progress", status: "wip" },
         { title: "Nastasia Dabringhaus", projectName: "Value Bridge – The Process Receipt", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-05.html", png: "./assets/thumbnails/value-bridge-icon.png", screenshot: "./assets/screenshots/value-bridge-icon.png", description: "Value Bridge helps designers price a finished project fairly when the client only sees hours or deliverables. Instead of one lump sum, the work is split into five process building blocks (Discovery, Framing, Facilitation, Relationship & process work, Reflection), each translated into market language such as “Strategy” or “Stakeholder management”. For every block you enter what the client actually sees, the visible hours, and what share of the whole work that is. The tool calculates the work hidden behind it and prints everything as a thermal-paper receipt: visible to client, behind it, total. You can add your own services, switch blocks on or off, and download the receipt as a 1080 x 1350 PNG. A “Sources & numbers” panel lists the research behind the logic, including caveats. Value Bridge is a bridge between market logic and transformative design practice: it makes invisible process work legible, countable and payable.", socials: [{ label: "LinkedIn: Nastasia Dabringhaus", url: "https://www.linkedin.com/search/results/people/?keywords=Nastasia%20Dabringhaus" }], progress: "in progress", status: "wip" },
-        { title: "Meike Raupach", projectName: "Dotty – The Halftone Tool", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/dotty.html", png: "./assets/thumbnails/boris.gif", screenshot: "./assets/screenshots/dotty.png", description: "“Dotty – The Halftone Tool” a browser-based duotone halftone generator was created for my work as a Risography tutor – to help students understand how their images will look when printed on a Risograph at a specific LPI (lines per inch), making print outcomes predictable before they ever touch the machine. The tool converts an uploaded or drag-dropped image into a duotone halftone using two user-chosen colors, one for shadows and one for highlights. An “LPI” slider sets the screen frequency, mirroring real Risograph settings, and a shape selector offers circle, square, diamond, or line dots makes it also fun to use for digital processes.”", socials: [], progress: "in progress", status: "wip" },
+        { title: "Meike Raupach", projectName: "Dotty – The Halftone Tool", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/dotty.html", png: "./assets/thumbnails/boris.gif", screenshot: "./assets/screenshots/dotty.png", description: "“Dotty – The Halftone Tool” a browser-based duotone halftone generator was created for my work as a Risography tutor – to help students understand how their images will look when printed on a Risograph at a specific LPI (lines per inch), making print outcomes predictable before they ever touch the machine. The tool converts an uploaded or drag-dropped image into a duotone halftone using two user-chosen colors, one for shadows and one for highlights. An “LPI” slider sets the screen frequency, mirroring real Risograph settings, and a shape selector offers circle, square, diamond, or line dots makes it also fun to use for digital processes.”", socials: [{ label: "veryemotionalhuman", url: "https://www.instagram.com/veryemotionalhuman/" }], progress: "in progress", status: "wip" },
         { title: "Hannah Shirin Tempel", projectName: "Font Morpher 3000", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/font_morpher_3000.html", png: "./assets/thumbnails/funny_random1.png", screenshot: "./assets/screenshots/font_morpher.png", description: "Have you ever wondered what two completely different fonts would look like if they were smushed together? Well, now you no longer have to!With the help of the “Font-Morpher 3000,” you can blend, stretch, and combine any two typefaces to create something entirely unique. Whether you want to mash up a classic serif with a futuristic display font or just see what kind of typographic chaos happens when two styles collide, this tool lets you bring your wildest ideas to life.The browser-based application requires no installation and is super easy to use. It features an intuitive interface and plenty of customization options to play around with. Best of all, once you are happy with your creation, you can easily download your custom font and use it in your own design projects.Go ahead, try it out for yourself, and have fun experimenting!", socials: [], progress: "in progress", status: "wip" },
         { title: "Lou Rosa Sternebeck", projectName: "type/motion", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/type_motion.html", png: "./assets/thumbnails/lamb.gif", screenshot: "./assets/screenshots/type_motion.png", description: "Who said typography has to sit still? TYPE/MOTION is an interactive creative playground that brings typography to life. Stretch it, twist it, bend it, blur it — explore the possibilities of text beyond its conventional form.Manipulate entire words or individual letters, experiment with custom fonts, colors, gradients, distortions, lighting, shadows and visual effects.At the heart of the tool are five individually editable keyframes. Each frame represents a different stage of your design, allowing you to create unique compositions that automatically transition into one another, transforming static designs into fluid animations.Adjust the speed, duration and transitions, create seamless loops and preview your animation in real time. Once you’re happy with the result, export individual frames as images or download the entire animation as a video.", socials: [], progress: "in progress", status: "wip" },
         { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-09.html", png: "./assets/thumbnails/angel.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Jeanette Schweiger", projectName: "Flowertype", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/flowertype-JeanetteSchweiger.html", png: "./assets/thumbnails/flowertype.png", screenshot: "./assets/screenshots/flowertype.png", description: "Flowertype is a browser-based generative typography tool that turns a short sentence into a three-dimensional flower made of letters. Users type up to 36 characters, which the tool repeats, separated by bullet points, along a spiral that winds outward across a petal-shaped surface. Each letter scales to fit the gap between rings, so the text grows from a tiny core to large outer petals and tilts with the surface’s curvature.Five sliders shape the form.The number of petals, how deeply they are cut, how many rings the spiral makes, how far the flower cups forward or back (bloom), and how much the petals twist (swirl). A palette of six colours sets the background and flower independently. Dragging rotates the flower in 3D, and it keeps spinning briefly after you let go. Scrolling zooms in and out..", socials: [], progress: "in progress", status: "wip" },
-        { title: "Ilvy Anik Frommelt", projectName: "Your font", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/your_font.html", png: "./assets/thumbnails/glitter_t.png", screenshot: "./assets/screenshots/meine-handschrift.png", description: "Your Font is a very nice tool for people who are interested in typography and want to use their own handwriting online! Users can write each letter of the alphabet and some extra symbols by hand into the web tool, and it creates a new font in different typefaces that can be named however they like. It can be downloaded and then used in other programs. The result is a unique handwriting as a digital font!", socials: [], progress: "in progress", status: "wip" },
+        { title: "Jeanette Schweiger", projectName: "Flowertype", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/flowertype-JeanetteSchweiger.html", png: "./assets/thumbnails/flowertype.png", screenshot: "./assets/screenshots/flowertype.png", description: "Flowertype is a browser-based generative typography tool that turns a short sentence into a three-dimensional flower made of letters. Users type up to 36 characters, which the tool repeats, separated by bullet points, along a spiral that winds outward across a petal-shaped surface. Each letter scales to fit the gap between rings, so the text grows from a tiny core to large outer petals and tilts with the surface’s curvature.Five sliders shape the form.The number of petals, how deeply they are cut, how many rings the spiral makes, how far the flower cups forward or back (bloom), and how much the petals twist (swirl). A palette of six colours sets the background and flower independently. Dragging rotates the flower in 3D, and it keeps spinning briefly after you let go. Scrolling zooms in and out..", socials: [{ label: "fleursetserpents", url: "https://www.instagram.com/fleursetserpents/#" }], progress: "in progress", status: "wip" },
+        { title: "Ilvy Anik Frommelt", projectName: "Your font", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/your_font.html", png: "./assets/thumbnails/glitter_t.png", screenshot: "./assets/screenshots/meine-handschrift.png", description: "Your Font is a very nice tool for people who are interested in typography and want to use their own handwriting online! Users can write each letter of the alphabet and some extra symbols by hand into the web tool, and it creates a new font in different typefaces that can be named however they like. It can be downloaded and then used in other programs. The result is a unique handwriting as a digital font!", socials: [{ label: "ilvyanik", url: "https://www.instagram.com/ilvyanik/tagged/" }], progress: "in progress", status: "wip" },
         { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-13.html", png: "./assets/thumbnails/luftballon.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Code & Context Student", creator: "Raffaella Lanza", session: "2026", html: "./projects/draw-something.html", png: "./assets/thumbnails/bot.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
+        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Code & Context Student", creator: "Raffaella Lanza", session: "2026", html: "./projects/draw-something.html", png: "./assets/thumbnails/bot.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Alice had the right idea: if the world around you feels absurd, you might as well invent your own. When you're tired of the systems we're expected to fit into, it helps to play with a different set of rules. Use this space to mess around with symbols, explore who you are outside the usual boxes, and stitch together a flag for whatever reality makes sense to you.", socials: [], progress: "complete", status: "ready" },
 
       ];
 
@@ -1170,8 +1194,17 @@
           <h2>What do we do now? — Class Archive</h2>
           <p>From 2 to 6 November 2026, 13 students from KISD – Köln International School of Design – took part in the short-term project WHAT DO WE DO NOW? CRITICAL PRACTICE IN DEALING WITH INTELLIGENT SYSTEMS, led by Charlie Singer-Fischer. Through critical discussions, research and hands-on experiments, the course explored how AI systems shape design, society and professional practice. Rather than focusing on learning specific tools, the students explored AI tools as spaces that can be actively shaped, questioned and reimagined through design. The week concluded with a collaborative digital format sharing their findings, experiments and readings. Each desktop item is a place for a student's work to live and be explored.</p>
           <p>Choose an item to read its description and view its screenshot. Use its <strong>Socials</strong> menu to open links, or the <strong>Thumbnail size</strong> slider to resize its desktop image. Use <strong>List</strong> to browse the collection, <strong>Questions</strong> to jump to the interactive barometers below, or <strong>Shuffle</strong> to rearrange the desktop.</p>
+          <p class="about-credit">Web design &amp; web development: Raffaella Lanza<br>With conceptual contributions from: Meike Raupach<br>Class materials and project content: Participants of <em>What Do We Do Now?</em></p>
           `;
         openWindow("About — Class Archive", content);
+      }
+
+      function openImprint() {
+        const content = document.createElement("iframe");
+        content.className = "imprint-frame";
+        content.src = "./assets/materials/imprint.html";
+        content.title = "Imprint";
+        openWindow("Imprint", content);
       }
 
       function openMaterials() {
@@ -1678,6 +1711,7 @@
       document.getElementById("about-button").addEventListener("click", openAbout);
       document.getElementById("list-button").addEventListener("click", openList);
       document.getElementById("materials-button").addEventListener("click", openMaterials);
+      document.getElementById("imprint-button").addEventListener("click", openImprint);
       document.getElementById("questions-button").addEventListener("click", () => {
         if (!shell.hidden) closeWindow();
         document.getElementById("questions-section").scrollIntoView({
