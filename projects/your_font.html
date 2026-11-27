@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your Font</title>
+
+<style>
+:root{--b:#2150e8;--b2:#1738b8;--k:#0d0f14;--bg:#f2f5fc;--ln:#e2e7f3;--mut:#6b7385;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--k);background:radial-gradient(900px 420px at 85% -5%,#dce6ff,transparent),var(--bg);min-height:100vh}
+svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
+header{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 20px;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}
+.brand{font-weight:700}
+.brand span{color:var(--b)}
+nav{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:999px}
+nav button{border:0;background:none;padding:8px 16px;border-radius:999px;font:inherit;font-weight:600;color:var(--k);cursor:pointer;transition:.2s}
+nav button:hover{background:#fff}
+nav button.on{background:var(--b);color:#fff;box-shadow:0 4px 14px rgba(33,80,232,.4)}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 90px}
+.hero{text-align:center;padding:22px 0 10px}
+.sig{margin:0;font-family:"Snell Roundhand","Zapfino","Segoe Script","Lucida Handwriting","Brush Script MT","Apple Chancery","URW Chancery L",cursive;font-weight:400;font-size:clamp(2.7rem,9vw,5.4rem);line-height:1.2;padding:0 .2em;background:linear-gradient(100deg,#0d0f14 0%,#2150e8 55%,#0d0f14 100%);-webkit-background-clip:text;background-clip:text;color:transparent;transform:rotate(-2deg);animation:fade 1.2s both}
+.sw{width:min(340px,70%);height:24px;stroke:var(--b);fill:none;stroke-width:2;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:dr 1.6s .4s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+@keyframes fade{from{opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.sw{stroke-dashoffset:0}}
+.sub{color:var(--mut);max-width:560px;margin:6px auto 0}
+.pn{background:#fff;border:1px solid var(--ln);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 1px 2px rgba(13,15,20,.04),0 10px 30px rgba(33,80,232,.07)}
+.first{background:linear-gradient(120deg,var(--b),var(--b2));color:#fff;border:0}
+.first b{display:block;font-size:1.1rem}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+label.l{font-weight:600}
+select,textarea,input[type=text]{font:inherit;color:var(--k);border:1px solid var(--ln);border-radius:12px;padding:10px 12px;background:#fff;transition:.2s}
+select:focus,textarea:focus,input:focus,button:focus-visible{outline:3px solid rgba(33,80,232,.3);border-color:var(--b)}
+textarea{width:100%;min-height:150px;resize:vertical}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--b);background:var(--b);color:#fff;padding:10px 18px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{background:var(--b2);transform:translateY(-1px);box-shadow:0 8px 20px rgba(33,80,232,.3)}
+.btn.g{background:#fff;color:var(--k);border-color:var(--ln)}
+.btn.g:hover{border-color:var(--b);color:var(--b);box-shadow:none}
+.btn.on{background:var(--k);border-color:var(--k);color:#fff}
+.bar{height:10px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),#5b86ff);border-radius:99px;transition:width .4s}
+.note{font-size:.9rem;color:var(--mut)}
+.note.err{color:#b3261e}
+.gh{margin:26px 0 8px;font-size:1.05rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+.gc{background:#fff;border:1.5px dashed #c5cfe8;border-radius:14px;padding:8px;transition:.2s}
+.gc:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(33,80,232,.12)}
+.gc.done{border:1.5px solid var(--b)}
+.ct{display:flex;justify-content:space-between;align-items:center;padding:0 2px 4px}
+.ct b{font-size:1.2rem}
+.st{font-size:.75rem;color:var(--mut)}
+.gc.done .st{color:var(--b);font-weight:600}
+.gc canvas,.tile canvas{width:100%;aspect-ratio:1;display:block;border-radius:10px;touch-action:none;cursor:crosshair;background:linear-gradient(#0000 34.5%,rgba(33,80,232,.16) 34.5% 35.5%,#0000 35.5% 69.5%,rgba(33,80,232,.4) 69.5% 70.5%,#0000 70.5%) #fbfcff}
+.mini{width:100%;margin-top:6px;border:0;background:var(--bg);border-radius:8px;padding:5px;font:inherit;font-size:.8rem;cursor:pointer;color:var(--k);transition:.2s}
+.mini:hover{background:#e3eaff;color:var(--b)}
+.tools{position:sticky;top:62px;z-index:4}
+input[type=range]{accent-color:var(--b)}
+#out{width:100%;border-radius:12px;border:1px dashed #c5cfe8;background:repeating-conic-gradient(#f4f6fb 0 25%,#fff 0 50%) 0 0/16px 16px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--k);color:#fff;padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.3s;z-index:30}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:560px){
+ header{padding:8px 12px}
+ .brand{display:none}
+ nav{width:100%}
+ nav button{flex:1;padding:8px}
+ .cards{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+ .tools{top:56px}
+}
+
+/* Deep navy & silver interface */
+:root{--b:#9eafc7;--b2:#d5deea;--k:#e5ebf4;--bg:#07162f;--ln:#29466c;--mut:#a7b7cc;color-scheme:dark}
+body{color:var(--k);background:radial-gradient(900px 460px at 50% -12%,rgba(37,104,190,.38),transparent 68%),linear-gradient(145deg,#061329,#0a2145 58%,#07162f)}
+header{background:rgba(5,18,40,.92);border-bottom:1px solid #29466c}
+.brand{color:#dce5f1}
+.brand span{color:#c4d0df}
+nav{background:#0b2345}
+nav button{color:#c6d2e1}
+nav button:hover{background:#17365e}
+nav button.on{background:linear-gradient(135deg,#d9e2ed,#8fa4bf);color:#07162f;box-shadow:0 4px 18px rgba(117,163,220,.22)}
+.sig{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:800;font-size:clamp(3rem,10vw,6rem);letter-spacing:.025em;text-transform:lowercase;transform:none;background:linear-gradient(180deg,#fff,#aebed1 72%,#8298b4);-webkit-background-clip:text;background-clip:text;color:transparent;animation:fade 1s both}
+.sw{display:none}
+.sub{color:#b3c2d5}
+.pn{background:linear-gradient(145deg,rgba(15,39,73,.96),rgba(8,27,54,.98));border:1px solid #29466c;box-shadow:0 12px 34px rgba(0,0,0,.2)}
+.first{background:linear-gradient(120deg,#173e70,#0d2a52);color:#e8eef6;border:1px solid #41658f}
+select,textarea,input[type=text]{color:#edf2f8;border:1px solid #385779;background:#071a35}
+select:focus,textarea:focus,input:focus,button:focus-visible{outline:3px solid rgba(159,187,222,.28);border-color:#a9bdd6}
+.btn{border:1px solid #a9bdd6;background:linear-gradient(135deg,#d8e1ec,#8fa5c0);color:#07162f}
+.btn:hover{background:linear-gradient(135deg,#f1f5fa,#a8bad0);box-shadow:0 8px 20px rgba(95,143,201,.22)}
+.btn.g{background:#102b50;color:#d9e3ef;border-color:#456384}
+.btn.g:hover{border-color:#bdcadd;color:#fff;background:#17385f}
+.btn.on{background:#d6e0ec;border-color:#d6e0ec;color:#07162f}
+.bar{background:#07172e}
+.bar i{background:linear-gradient(90deg,#718eaf,#d8e2ee)}
+.note{color:#aebed1}
+.note.err{color:#f0c5c5}
+.chip{display:inline-block;background:#203d61;color:#e4ebf4;border:1px solid #547092;border-radius:8px;padding:2px 9px;margin:3px;font-weight:700}
+.gc{background:#0a1e3a;border-color:#456384}
+.gc.done{border-color:#b5c6dc}
+.gc.done .st{color:#d9e3ef}
+.gc canvas,.tile canvas{background:linear-gradient(#0000 34.5%,rgba(120,155,197,.18) 34.5% 35.5%,#0000 35.5% 69.5%,rgba(120,155,197,.4) 69.5% 70.5%,#0000 70.5%) #f4f6fa}
+.mini{background:#102b50;color:#dbe5f1}
+.mini:hover{background:#1a3c66;color:#fff}
+#out{border-color:#56708e;background:repeating-conic-gradient(#e8edf3 0 25%,#fff 0 50%) 0 0/16px 16px}
+#toast{background:#dce5ef;color:#07162f}
+#sz{color:#edf2f8}
+@media(max-width:560px){.sig{font-size:clamp(2.6rem,13vw,4rem)}}
+/* Bold red and silver theme */
+:root{--b:#e0e3e7;--b2:#f4f5f7;--k:#f2f3f5;--bg:#e21b36;--ln:#f0aab5;--mut:#f4dce0;color-scheme:dark}
+body{color:var(--k);background:radial-gradient(950px 480px at 50% -12%,rgba(255,190,200,.24),transparent 68%),linear-gradient(145deg,#ed233e 0%,#e91634 52%,#d90e2d 100%)}
+header{background:rgba(198,13,42,.94);border-bottom:1px solid rgba(244,220,225,.5)}
+.brand{color:#f0f1f3}.brand span{color:#dce1e6}
+nav{background:#c90f30}nav button{color:#f3e9eb}nav button:hover{background:#e52a45}
+nav button.on{background:linear-gradient(135deg,#f5f6f7,#c4cbd2);color:#761024;box-shadow:0 4px 18px rgba(80,0,15,.2)}
+.sig{display:flex;align-items:center;justify-content:center;gap:clamp(9px,2vw,20px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:400;font-size:clamp(3rem,10vw,6rem);letter-spacing:.015em;text-transform:none;transform:none;color:#dfe3e7;animation:fade 1s both}
+.sig .your{font-weight:300;font-style:italic;color:#cbd1d7}.sig .font{font-weight:400;color:#f0f2f4}
+.sig .spiral{width:.42em;height:.42em;flex:none;stroke:#d5dbe1;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.sw{display:none}.sub{color:#f8e7ea}
+.pn{background:linear-gradient(145deg,rgba(231,28,57,.97),rgba(199,13,43,.98));border:1px solid rgba(255,211,219,.55);box-shadow:0 12px 34px rgba(105,0,20,.16)}
+.first{background:linear-gradient(120deg,#f02b47,#d91132);color:#fff;border:1px solid #ffc0ca}
+select,textarea,input[type=text]{color:#f8f1f2;border:1px solid #f0a3b0;background:#a90d2b}
+select:focus,textarea:focus,input:focus,button:focus-visible{outline:3px solid rgba(255,235,239,.38);border-color:#fff0f2}
+.btn{border:1px solid #e7eaed;background:linear-gradient(135deg,#f0f2f4,#c4cbd2);color:#751024}
+.btn:hover{background:linear-gradient(135deg,#fff,#dce0e4);box-shadow:0 8px 20px rgba(100,0,20,.2)}
+.btn.g{background:#b70e2e;color:#f6edef;border-color:#f0a3b0}.btn.g:hover{border-color:#fff;color:#fff;background:#d81939}
+.btn.on{background:#e8ebee;border-color:#e8ebee;color:#751024}
+.bar{background:#a70d2b}.bar i{background:linear-gradient(90deg,#bbc2ca,#f4f5f6)}
+.note{color:#f7dfe4}.note.err{color:#fff0f2}
+.chip{display:inline-block;background:#a80d2b;color:#fff1f3;border:1px solid #f2a9b5;border-radius:8px;padding:2px 9px;margin:3px;font-weight:700}
+.gc{background:#c81232;border-color:#f0a3b0}.gc.done{background:linear-gradient(145deg,#f1f3f5,#cbd1d7);border:1.5px solid #fff}
+.gc.done .ct b,.gc.done .st{color:#7b1025}.gc.done .st{font-weight:700}.gc.done canvas{background:linear-gradient(#0000 34.5%,rgba(100,110,120,.12) 34.5% 35.5%,#0000 35.5% 69.5%,rgba(100,110,120,.25) 69.5% 70.5%,#0000 70.5%) #dfe3e7}
+.gc canvas,.tile canvas{background:linear-gradient(#0000 34.5%,rgba(170,20,45,.12) 34.5% 35.5%,#0000 35.5% 69.5%,rgba(170,20,45,.28) 69.5% 70.5%,#0000 70.5%) #f3f4f6}
+.mini{background:#a90d2b;color:#f8ecef}.mini:hover{background:#ed2441;color:#fff}
+#out{border-color:#f5c0c8;background:repeating-conic-gradient(#e8e1e4 0 25%,#fff 0 50%) 0 0/16px 16px}
+#toast{background:#e7eaed;color:#741024}#sz{color:#f8f1f2}
+@media(max-width:560px){.sig{font-size:clamp(2.6rem,13vw,4rem)}.sig .spiral{width:.34em;height:.34em}}
+</style>
+</head>
+
+<body>
+<svg style="display:none">
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="i-er" viewBox="0 0 24 24"><path d="M7 21h13M5 13l8-8a2 2 0 013 0l3 3a2 2 0 010 3l-8 8H9l-4-4a2 2 0 010-3z"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-dl" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+</svg>
+
+<header>
+ <div class="brand">your font</div>
+ <nav>
+  <button data-v="create" class="on">Create Your Font</button>
+  <button data-v="use">Use Your Font</button>
+ </nav>
+</header>
+
+<main>
+<section id="v-create">
+ <div class="hero">
+  <h1 class="sig"><svg class="spiral" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5c-10 0-18 8-18 18 0 9 7 16 16 16 7 0 13-5 13-12 0-6-4-10-10-10-4 0-7 3-7 7 0 3 2 5 5 5 2 0 3-1 3-3"/></svg><span class="your">your</span><span class="font">font</span><svg class="spiral" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5c10 0 18 8 18 18 0 9-7 16-16 16-7 0-13-5-13-12 0-6 4-10 10-10 4 0 7 3 7 7 0 3-2 5-5 5-2 0-3-1-3-3"/></svg></h1>
+  <svg class="sw" viewBox="0 0 320 24"><path d="M4 16C60 2 120 22 180 10S280 4 316 12"/></svg>
+  <p class="sub">Draw your own letters, numbers, and special characters. Use your handwriting in text previews or export it as an installable font.</p>
+ </div>
+
+ <div class="pn first" id="first">
+  <b>Get started: your font is still empty</b>
+  Draw your letters and numbers in the character fields. Each character is saved automatically.
+ </div>
+
+ <div class="pn" id="warn" hidden>
+  <span class="note err">Persistent storage is unavailable in this browser. Your characters will only remain available until you close this tab.</span>
+ </div>
+
+ <div class="pn">
+  <div class="row" style="justify-content:space-between">
+   <b id="pt"></b>
+   <button class="btn g" id="reset"><svg class="i"><use href="#i-trash"/></svg> Reset all characters</button>
+  </div>
+  <div class="bar"><i id="pf"></i></div>
+ </div>
+
+ <div class="pn tools row">
+  <button class="btn on" id="tp"><svg class="i"><use href="#i-pen"/></svg> Pen</button>
+  <button class="btn g" id="te"><svg class="i"><use href="#i-er"/></svg> Eraser</button>
+  <label>Stroke width <input id="sw" type="range" min="3" max="16" value="7"></label>
+  <span class="note">Guide lines: baseline and midline</span>
+ </div>
+
+ <div id="grid"></div>
+</section>
+
+<section id="v-use" hidden>
+ <div class="hero">
+  <h2 style="margin:0;font-size:2rem">Use Your Font</h2>
+  <p class="sub">Type text and preview it in your handwriting.</p>
+ </div>
+
+ <div class="pn first" id="nogl">
+  <b>No characters saved yet</b>
+  Create your handwriting first.
+  <button class="btn g" id="tocr" style="margin-top:8px">Go to “Create Your Font”</button>
+ </div>
+
+ <div class="pn">
+  <textarea id="txt" placeholder="Type your text here. Line breaks will be preserved."></textarea>
+  <div class="row" style="margin-top:12px">
+   <label>Font size
+    <select id="sz">
+     <option>32</option><option>48</option><option selected>64</option><option>96</option><option>128</option>
+    </select> px
+   </label>
+   <button class="btn" id="conf"><svg class="i"><use href="#i-ok"/></svg> Preview text</button>
+  </div>
+ </div>
+
+ <div class="pn" id="install-font">
+  <h3 style="margin-top:0">Install Your Font</h3>
+  <p class="note">Create an installable TrueType font file (.ttf) from your saved characters and use it on your computer in other applications.</p>
+  <div class="row">
+   <label for="fontname">Font family name</label>
+   <input id="fontname" type="text" maxlength="48" value="Your Font" placeholder="e.g. Your Font">
+   <label for="fontweight">Font weight</label>
+   <select id="fontweight"><option value="light">Light</option><option value="regular" selected>Regular</option><option value="medium">Medium</option><option value="bold">Bold</option></select>
+   <button class="btn" id="fontdownload">Download selected font</button>
+   <button class="btn g" id="fontdownloadall">Download all weights (.zip)</button>
+  </div>
+  <div class="pn" style="margin:14px 0 0;background:#071a35">
+   <div class="note">Preview</div>
+   <div id="fontpreview" style="font-size:30px;line-height:1.5;overflow-wrap:anywhere">Aa Bb 123 ÄÖÜ äöü ß</div>
+  </div>
+  <p id="fontstatus" class="note" aria-live="polite">Your font preview will appear after the font file is generated. Missing characters will be listed during export. OpenType.js is loaded from a CDN, so an internet connection is required for TTF export.</p>
+  <div class="note">
+   <b>Installation:</b><br>
+   Windows: Download the .ttf file, open it, and select “Install”.<br>
+   macOS: Open the .ttf file with Font Book and click “Install”.<br>
+   You may need to restart other applications.
+  </div>
+ </div>
+
+ <div class="pn" id="res" hidden>
+  <canvas id="out" width="300" height="100"></canvas>
+  <p id="miss" class="note"></p>
+  <div class="row">
+   <select id="bg">
+    <option value="white">PNG with white background</option>
+    <option value="clear">PNG with transparent background</option>
+   </select>
+   <button class="btn g" id="png"><svg class="i"><use href="#i-dl"/></svg> Download PNG</button>
+   <button class="btn g" id="pdf"><svg class="i"><use href="#i-dl"/></svg> Download PDF</button>
+  </div>
+ </div>
+</section>
+</main>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),
+el=(t,c,h)=>{
+ const e=document.createElement(t);
+ if(c)e.className=c;
+ if(h!=null)e.textContent=h;
+ return e
+};
+
+const GROUPS=[
+ ['Uppercase letters','ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ'],
+ ['Lowercase letters','abcdefghijklmnopqrstuvwxyzäöüß'],
+ ['Numbers','0123456789'],
+ ['Punctuation & special characters',`.,!?;:'"-–()@&%+=/#*€`]
+];
+const ALL=GROUPS.flatMap(g=>[...g[1]]),TOTAL=ALL.length;
+const saved=new Map(),cards={},cache=new Map();
+let tool='pen',size=7;
+
+const toast=t=>{
+ const e=$('#toast');
+ e.textContent=t;
+ e.classList.add('show');
+ clearTimeout(toast.t);
+ toast.t=setTimeout(()=>e.classList.remove('show'),2800)
+};
+
+/* IndexedDB */
+const DB=new Promise((ok,no)=>{
+ try{
+  const r=indexedDB.open('hwfont',2);
+  r.onupgradeneeded=()=>{
+   const d=r.result;
+   if(!d.objectStoreNames.contains('g'))d.createObjectStore('g',{keyPath:'ch'});
+  };
+  r.onsuccess=()=>ok(r.result);
+  r.onerror=()=>no(r.error)
+ }catch(e){no(e)}
+});
+
+const tx=async(m,f)=>{
+ const d=await DB;
+ return new Promise((ok,no)=>{
+  const t=d.transaction('g',m),q=f(t.objectStore('g'));
+  t.oncomplete=()=>ok(q&&q.result);
+  t.onerror=()=>no(t.error)
+ })
+};
+
+const dbPut=(ch,url)=>tx('readwrite',s=>s.put({ch,url}));
+const dbDel=ch=>tx('readwrite',s=>s.delete(ch));
+const dbAll=()=>tx('readonly',s=>s.getAll());
+const dbClear=()=>tx('readwrite',s=>s.clear());
+const dbwarn=()=>{$('#warn').hidden=false};
+
+/* Character fields */
+function stroke(x,a,b,c,d){
+ x.globalCompositeOperation=tool==='pen'?'source-over':'destination-out';
+ x.strokeStyle='#0d0f14';
+ x.lineWidth=tool==='pen'?size:size*3;
+ x.lineCap=x.lineJoin='round';
+ x.beginPath();
+ x.moveTo(a,b);
+ x.lineTo(c,d);
+ x.stroke()
+}
+
+function bind(cv,ch){
+ const x=cv.getContext('2d');
+ let on=false,lx,ly;
+ const pt=e=>{
+  const r=cv.getBoundingClientRect();
+  return[(e.clientX-r.left)*200/r.width,(e.clientY-r.top)*200/r.height]
+ };
+ cv.onpointerdown=e=>{
+  e.preventDefault();
+  cv.setPointerCapture(e.pointerId);
+  on=true;
+  [lx,ly]=pt(e);
+  stroke(x,lx,ly,lx+.01,ly)
+ };
+ cv.onpointermove=e=>{
+  if(!on)return;
+  const[a,b]=pt(e);
+  stroke(x,lx,ly,a,b);
+  lx=a;ly=b
+ };
+ cv.onpointerup=cv.onpointercancel=()=>{
+  if(on){on=false;persist(ch)}
+ }
+}
+
+const blank=cv=>{
+ const d=cv.getContext('2d').getImageData(0,0,200,200).data;
+ for(let i=3;i<d.length;i+=4)if(d[i]>8)return false;
+ return true
+};
+
+function persist(ch){
+ const cv=cards[ch].cv;
+ if(blank(cv)){
+  saved.delete(ch);
+  dbDel(ch).catch(dbwarn)
+ }else{
+  const u=cv.toDataURL('image/png');
+  saved.set(ch,u);
+  dbPut(ch,u).catch(dbwarn)
+ }
+ cache.clear();
+ mark(ch);
+ prog()
+}
+
+function mark(ch){
+ const k=cards[ch];
+ k.c.classList.toggle('done',saved.has(ch));
+ k.st.textContent=saved.has(ch)?'✓ complete':'empty'
+}
+
+function prog(){
+ const n=saved.size;
+ $('#pf').style.width=n/TOTAL*100+'%';
+ $('#pt').textContent=`${n} of ${TOTAL} characters completed`;
+ $('#first').hidden=n>0;
+ $('#nogl').hidden=n>0
+}
+
+function build(){
+ const root=$('#grid');
+ GROUPS.forEach(([name,chars])=>{
+  root.append(el('h3','gh',name));
+  const g=el('div','cards');
+  [...chars].forEach(ch=>{
+   const c=el('div','gc'),t=el('div','ct'),b=el('b',0,ch),st=el('span','st','empty');
+   t.append(b,st);
+   const cv=el('canvas');
+   cv.width=cv.height=200;
+   cv.setAttribute('aria-label','Character field '+ch);
+   const bt=el('button','mini');
+   bt.innerHTML='<svg class="i"><use href="#i-trash"/></svg> Clear';
+   bt.onclick=()=>{
+    cv.getContext('2d').clearRect(0,0,200,200);
+    persist(ch)
+   };
+   c.append(t,cv,bt);
+   g.append(c);
+   cards[ch]={cv,c,st};
+   bind(cv,ch)
+  });
+  root.append(g)
+ })
+}
+
+function put(ch,cell){
+ const x=cards[ch].cv.getContext('2d');
+ x.globalCompositeOperation='source-over';
+ x.clearRect(0,0,200,200);
+ x.drawImage(cell,0,0);
+ persist(ch)
+}
+
+
+/* Navigation & tools */
+function go(v){
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));
+ $('#v-create').hidden=v!=='create';
+ $('#v-use').hidden=v!=='use';
+ scrollTo({top:0,behavior:'smooth'})
+}
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+$('#tocr').onclick=()=>go('create');
+
+function setTool(t){
+ tool=t;
+ $('#tp').classList.toggle('on',t==='pen');
+ $('#tp').classList.toggle('g',t!=='pen');
+ $('#te').classList.toggle('on',t==='eraser');
+ $('#te').classList.toggle('g',t!=='eraser')
+}
+
+$('#tp').onclick=()=>setTool('pen');
+$('#te').onclick=()=>setTool('eraser');
+$('#sw').oninput=e=>size=+e.target.value;
+
+$('#reset').onclick=()=>{
+ if(!confirm('Are you sure you want to reset all handwriting?'))return;
+ saved.clear();
+ cache.clear();
+ Object.keys(cards).forEach(c=>{
+  cards[c].cv.getContext('2d').clearRect(0,0,200,200);
+  mark(c)
+ });
+ prog();
+ dbClear().catch(dbwarn);
+ toast('Handwriting reset')
+};
+
+
+/* Text preview */
+const load=u=>new Promise(r=>{
+ const i=new Image();
+ i.onload=()=>r(i);
+ i.src=u
+});
+
+function weightCanvas(source,weight){
+ const cv=el('canvas');cv.width=cv.height=200;
+ const ctx=cv.getContext('2d');ctx.drawImage(source,0,0);
+ const image=ctx.getImageData(0,0,200,200),src=image.data;
+ const radius=weight==='light'?-1:weight==='medium'?1:weight==='bold'?2:0;
+ if(!radius)return cv;
+ const mask=new Uint8Array(200*200);
+ for(let i=0;i<mask.length;i++)mask[i]=src[i*4+3]>32?1:0;
+ const out=new Uint8Array(mask.length),r=Math.abs(radius),dilate=radius>0;
+ for(let y=0;y<200;y++)for(let x=0;x<200;x++){
+  let value=dilate?0:1;
+  for(let yy=Math.max(0,y-r);yy<=Math.min(199,y+r);yy++)for(let xx=Math.max(0,x-r);xx<=Math.min(199,x+r);xx++){
+   const v=mask[yy*200+xx];
+   if(dilate&&v)value=1;
+   if(!dilate&&!v)value=0;
+  }
+  out[y*200+x]=value;
+ }
+ const result=ctx.createImageData(200,200);
+ for(let i=0;i<out.length;i++)if(out[i]){
+  const j=i*4;result.data[j]=18;result.data[j+1]=16;result.data[j+2]=18;result.data[j+3]=255;
+ }
+ if(!dilate&&!out.some(Boolean))return cv;
+ ctx.putImageData(result,0,0);return cv
+}
+
+async function glyph(ch,weight=$('#fontweight')?.value||'regular'){
+ const key=ch+'|'+weight;if(cache.has(key))return cache.get(key);
+ const u=saved.get(ch);let r=null;
+ if(u){
+  const img=await load(u),variant=weightCanvas(img,weight),x=variant.getContext('2d'),d=x.getImageData(0,0,200,200).data;
+  let a=200,b=-1;
+  for(let i=3;i<d.length;i+=4)if(d[i]>20){const px=(i>>2)%200;if(px<a)a=px;if(px>b)b=px}
+  if(b>=0)r={img:variant,bx:a,bw:b-a+1}
+ }
+ cache.set(key,r);return r
+}
+
+async function renderTextPreview(){
+ const text=$('#txt').value;
+ if(!text.trim())return toast('Please enter some text first.');
+ if(!saved.size){
+  $('#nogl').hidden=false;
+  return toast('Create some characters in “Create Your Font” first.')
+ }
+ const fs=+$('#sz').value,s=fs/200,pad=40,lh=fs*1.35,sp=fs*.07,spc=fs*.32,gs=new Map();
+ const selectedWeight=$('#fontweight').value;
+ await Promise.all([...new Set(text)].filter(c=>c.trim()).map(async c=>gs.set(c,await glyph(c,selectedWeight))));
+ const adv=c=>{
+  const g=gs.get(c);
+  return g?g.bw*s+sp:fs*.35
+ };
+ const wl=w=>[...w].reduce((a,c)=>a+adv(c),0);
+ const lw=l=>l.reduce((a,w,i)=>a+wl(w)+(i?spc:0),0);
+ const maxW=1200-2*pad,lines=[];
+ text.split('\n').forEach(par=>{
+  let cur=[],w=0;
+  par.split(' ').forEach(wd=>{
+   if(!wd)return;
+   const ww=wl(wd);
+   if(cur.length&&w+spc+ww>maxW){
+    lines.push(cur);
+    cur=[];
+    w=0
+   }
+   w+=(cur.length?spc:0)+ww;
+   cur.push(wd)
+  });
+  lines.push(cur)
+ });
+ const W=Math.max(1200,Math.ceil(Math.max(...lines.map(lw))+2*pad)),H=Math.round(pad*2+lines.length*lh),o=$('#out');
+ o.width=W;o.height=H;
+ const x=o.getContext('2d');
+ x.clearRect(0,0,W,H);
+ x.imageSmoothingQuality='high';
+ lines.forEach((l,i)=>{
+  let px=pad;
+  const y0=pad+i*lh;
+  l.forEach((wd,wi)=>{
+   if(wi)px+=spc;
+   [...wd].forEach(c=>{
+    const g=gs.get(c);
+    if(g)x.drawImage(g.img,g.bx,0,g.bw,200,px,y0,g.bw*s,fs);
+    px+=adv(c)
+   })
+  })
+ });
+ const miss=[...gs].filter(e=>!e[1]).map(e=>e[0]),mp=$('#miss');
+ mp.innerHTML='';
+ if(miss.length){
+  mp.append('Missing characters (shown as spaces): ');
+  miss.forEach(c=>mp.append(el('span','chip',c)))
+ }
+ $('#res').hidden=false;
+ $('#res').scrollIntoView({behavior:'smooth',block:'nearest'})
+}
+$('#conf').onclick=renderTextPreview;
+$('#fontweight').onchange=()=>{if(!$('#res').hidden)renderTextPreview()};
+
+/* Export */
+function dl(b,n){
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(b);
+ a.download=n;
+ a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),3000)
+}
+
+function flat(white){
+ const o=$('#out'),c=el('canvas');
+ c.width=o.width;c.height=o.height;
+ const x=c.getContext('2d');
+ if(white){
+  x.fillStyle='#fff';
+  x.fillRect(0,0,c.width,c.height)
+ }
+ x.drawImage(o,0,0);
+ return c
+}
+
+$('#png').onclick=()=>flat($('#bg').value==='white').toBlob(b=>dl(b,'your-font.png'));
+
+function mkpdf(j,w,h){
+ const e=new TextEncoder(),p=[],o=[];
+ let n=0;
+ const a=d=>{
+  const b=typeof d==='string'?e.encode(d):d;
+  p.push(b);n+=b.length
+ };
+ const ob=(i,s)=>{
+  o[i]=n;
+  a(`${i} 0 obj\n${s}\nendobj\n`)
+ };
+ const pw=Math.round(w*.5),ph=Math.round(h*.5),c=`q ${pw} 0 0 ${ph} 0 0 cm /I Do Q`;
+ a('%PDF-1.4\n');
+ ob(1,'<</Type/Catalog/Pages 2 0 R>>');
+ ob(2,'<</Type/Pages/Kids[3 0 R]/Count 1>>');
+ ob(3,`<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${pw} ${ph}]/Resources<</XObject<</I 5 0 R>>>>/Contents 4 0 R>>`);
+ ob(4,`<</Length ${c.length}>>\nstream\n${c}\nendstream`);
+ o[5]=n;
+ a(`5 0 obj\n<</Type/XObject/Subtype/Image/Width ${w}/Height ${h}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${j.length}>>\nstream\n`);
+ a(j);
+ a('\nendstream\nendobj\n');
+ const xr=n;
+ a('xref\n0 6\n0000000000 65535 f \n');
+ for(let i=1;i<6;i++)a(String(o[i]).padStart(10,'0')+' 00000 n \n');
+ a(`trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n${xr}\n%%EOF`);
+ return p
+}
+
+$('#pdf').onclick=()=>{
+ const c=flat(true),b=atob(c.toDataURL('image/jpeg',.92).split(',')[1]),j=new Uint8Array(b.length);
+ for(let i=0;i<b.length;i++)j[i]=b.charCodeAt(i);
+ dl(new Blob(mkpdf(j,c.width,c.height),{type:'application/pdf'}),'your-font.pdf')
+};
+
+/* Installable TrueType font files */
+const FONT_CHARS=[...ALL];
+const FONT_SAMPLE='Aa Bb 123 ÄÖÜ äöü ß';
+const preview=$('#fontpreview');
+
+function updateFontPreview(){
+ preview.textContent=FONT_SAMPLE;
+ preview.style.fontFamily='system-ui,sans-serif'
+}
+
+function rasterCanvas(cv,ch,weight='regular'){
+ if(!window.opentype)return null;
+ const source=weightCanvas(cv,weight),ctx=source.getContext('2d'),d=ctx.getImageData(0,0,200,200).data;
+ let x0=200,y0=200,x1=-1,y1=-1;
+ for(let y=0;y<200;y++)for(let x=0;x<200;x++)if(d[(y*200+x)*4+3]>48){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(x1<0)return null;
+ const scale=5,side=48,w=x1-x0+1,path=new opentype.Path();
+ for(let y=y0;y<=y1;y++){
+  let x=x0;
+  while(x<=x1){while(x<=x1&&d[(y*200+x)*4+3]<=48)x++;if(x>x1)break;
+   const begin=x;while(x<=x1&&d[(y*200+x)*4+3]>48)x++;
+   const left=side+(begin-x0)*scale,right=side+(x-x0)*scale,top=(140-y)*scale,bottom=top+scale;
+   path.moveTo(left,top);path.lineTo(right,top);path.lineTo(right,bottom);path.lineTo(left,bottom);path.close()
+  }
+ }
+ return new opentype.Glyph({name:'uni'+ch.codePointAt(0).toString(16).toUpperCase().padStart(4,'0'),unicode:ch.codePointAt(0),advanceWidth:w*scale+side*2,path})
+}
+function rasterGlyph(ch,weight='regular'){return cards[ch]?rasterCanvas(cards[ch].cv,ch,weight):null}
+const WEIGHTS={light:{label:'Light',class:300},regular:{label:'Regular',class:400},medium:{label:'Medium',class:500},bold:{label:'Bold',class:700}};
+function makeTrueType(family,weight='regular'){
+ if(!window.opentype)throw new Error('OpenType.js could not be loaded. Check your internet connection and reload the page.');
+ const meta=WEIGHTS[weight]||WEIGHTS.regular;
+ const glyphs=[new opentype.Glyph({name:'.notdef',advanceWidth:600,path:new opentype.Path()})],missing=[];
+ for(const ch of FONT_CHARS){if(ch===' ')continue;const g=rasterGlyph(ch,weight);if(g)glyphs.push(g);else missing.push(ch)}
+ glyphs.push(new opentype.Glyph({name:'space',unicode:32,advanceWidth:300,path:new opentype.Path()}));
+ const font=new opentype.Font({familyName:family,styleName:meta.label,unitsPerEm:1000,ascender:800,descender:-350,glyphs});
+ if(font.tables&&font.tables.os2)font.tables.os2.usWeightClass=meta.class;
+ return {font,missing}
+}
+async function buildFontBlob(family,weight){
+ const {font,missing}=makeTrueType(family,weight);
+ return {blob:new Blob([font.toArrayBuffer()],{type:'font/ttf'}),missing,weight}
+}
+function safeFamily(){return ($('#fontname').value||'Your Font').trim().replace(/[\\/:*?"<>|]/g,'').slice(0,48)||'Your Font'}
+$('#fontdownload').onclick=async()=>{
+ try{
+  if(!saved.size){$('#fontstatus').textContent='Please create some characters first.';return}
+  const weight=$('#fontweight').value,family=safeFamily(),result=await buildFontBlob(family,weight);
+  dl(result.blob,`${family.replace(/\s+/g,'-')}-${weight}.ttf`);
+  const url=URL.createObjectURL(result.blob),face=new FontFace('UserHandwritingPreview',`url(${url})`);
+  face.load().then(f=>{document.fonts.add(f);preview.style.fontFamily='UserHandwritingPreview,system-ui,sans-serif'}).catch(()=>{});
+  $('#fontstatus').textContent=result.missing.length?`${WEIGHTS[weight].label} TTF created. Missing characters: ${result.missing.join(' ')}`:`${WEIGHTS[weight].label} TTF successfully created.`;
+  toast(`${WEIGHTS[weight].label} font file created.`)
+ }catch(e){$('#fontstatus').textContent='Font creation error: '+e.message}
+};
+
+$('#fontdownloadall').onclick=async()=>{
+ try{
+  if(!saved.size){$('#fontstatus').textContent='Please create some characters first.';return}
+  if(!window.JSZip)throw new Error('The ZIP library could not be loaded. Check your internet connection and reload the page.');
+  const family=safeFamily(),zip=new JSZip(),reports=[];
+  for(const weight of Object.keys(WEIGHTS)){
+   const result=await buildFontBlob(family,weight);
+   zip.file(`${family.replace(/\s+/g,'-')}-${weight}.ttf`,result.blob);
+   if(result.missing.length)reports.push(`${WEIGHTS[weight].label}: ${result.missing.join(' ')}`)
+  }
+  const blob=await zip.generateAsync({type:'blob'});dl(blob,`${family.replace(/\s+/g,'-')}-all-weights.zip`);
+  $('#fontstatus').textContent=reports.length?'All four TTF files created. Missing characters — '+reports.join(' | '):'All four TTF font files were successfully created and packaged into a ZIP file.';
+  toast('All four font weights are ready.')
+ }catch(e){$('#fontstatus').textContent='Font download error: '+e.message}
+};
+
+updateFontPreview();
+
+/* Initialization */
+build();
+prog();
+
+dbAll().then(rows=>{
+ (rows||[]).forEach(r=>{
+  if(!cards[r.ch])return;
+  saved.set(r.ch,r.url);
+  const i=new Image();
+  i.onload=()=>cards[r.ch].cv.getContext('2d').drawImage(i,0,0);
+  i.src=r.url;
+  mark(r.ch)
+ });
+ prog()
+}).catch(dbwarn);
+</script>
+</body>
+</html>

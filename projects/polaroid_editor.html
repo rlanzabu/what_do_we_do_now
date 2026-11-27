@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)file:///C:/Users/stb28/Downloads/polaroid_editor_transparent_export.html -->
+<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polaroid Editor</title>
+<style>
+  :root{
+    --panel:#FFD9F2; --ink:#570228; --muted:#8A5268; --line:#D9A8BC;
+    --accent:#570228; --desk:#DCE4B8;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+  }
+
+  body{
+    font-family:Futura,"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--desk);
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr);
+    height:100vh;
+    height:100dvh;
+    min-height:0;
+    overflow:hidden;
+  }
+
+  /* ---------- Einstellungen oben ---------- */
+  header{
+    background:var(--panel);
+    border-bottom:1px solid var(--line);
+    padding:8px 14px 7px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+    min-width:0;
+    z-index:2;
+  }
+
+  .bar{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px 12px;
+    width:100%;
+    min-width:0;
+  }
+
+  .button-row{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    min-width:0;
+    overflow:visible;
+    padding-bottom:0;
+  }
+
+  .button-row .group{
+    flex:0 0 auto;
+    flex-wrap:nowrap;
+    align-items:center;
+    gap:8px
+  }
+
+  .button-row button,.button-row .btn{
+    white-space:nowrap;
+    flex:0 0 auto
+  }
+
+  .button-row .group + .group{
+    padding-left:0;
+    border-left:0
+  }
+
+  .group{
+    display:flex;
+    flex:0 1 auto;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    gap:10px 12px;
+    min-width:0;
+    max-width:100%;
+  }
+
+  .group + .group{
+    padding-left:18px;
+    border-left:1px solid var(--line);
+  }
+
+  .title{
+    flex:0 0 auto;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:.01em;
+    margin:0 8px 0 0;
+    white-space:nowrap;
+    align-self:center;
+  }
+
+  .spacer{flex:1 1 12px}
+
+  label{
+    font-size:13px;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    min-width:0;
+  }
+
+  label.row{
+    flex-direction:row;
+    align-items:center;
+    gap:8px;
+    white-space:normal;
+  }
+
+  label span.val{color:var(--muted)}
+
+  label.slider{
+    width:135px;
+    flex:0 1 135px
+  }
+
+  label.slider .top{
+    display:flex;
+    justify-content:space-between;
+    gap:8px
+  }
+
+  input[type=text]{
+    font:inherit;
+    width:170px;
+    max-width:100%;
+    padding:8px 10px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:#fff;
+    color:var(--ink);
+  }
+
+  input[type=range]{
+    width:100%;
+    accent-color:var(--accent)
+  }
+
+  input[type=checkbox]{
+    accent-color:var(--accent);
+    flex:0 0 auto
+  }
+
+  .checks{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px 12px
+  }
+
+  button,.btn{
+    font:inherit;
+    font-size:14px;
+    padding:6px 10px;
+    min-height:32px;
+    border-radius:6px;
+    cursor:pointer;
+    white-space:normal;
+    flex:0 1 auto;
+    border:1px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    text-align:center;
+  }
+
+  button:hover:not(:disabled),.btn:hover{
+    background:var(--ink);
+    color:#fff
+  }
+
+  button:disabled{
+    opacity:.4;
+    cursor:not-allowed
+  }
+
+  button.primary,.btn.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff
+  }
+
+  button.primary:hover:not(:disabled),.btn.primary:hover{
+    background:#7A2348;
+    border-color:#7A2348
+  }
+
+  :focus-visible{
+    outline:3px solid #f5a524;
+    outline-offset:2px
+  }
+
+  #uploadBtn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center
+  }
+
+  #tray{
+    display:flex;
+    flex:1 1 100%;
+    flex-wrap:wrap;
+    gap:6px;
+    max-width:100%;
+    min-width:0;
+  }
+
+  #tray:empty{display:none}
+
+  #tray button{
+    padding:0;
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    border-radius:4px;
+    overflow:hidden;
+    border:2px solid transparent
+  }
+
+  #tray button.on{border-color:var(--accent)}
+
+  #tray img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block
+  }
+
+  /* Hintergrund-Farbpalette */
+  #backgroundOptions{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    flex-wrap:wrap;
+  }
+
+  #backgroundOptions button{
+    width:27px;
+    height:27px;
+    min-height:27px;
+    padding:0;
+    border:2px solid rgba(87,2,40,.25);
+    border-radius:50%;
+    flex:0 0 27px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+  }
+
+  #backgroundOptions button[aria-pressed="true"]{
+    outline:2px solid var(--ink);
+    outline-offset:2px;
+  }
+
+  #backgroundOptions button:hover{
+    transform:scale(1.08);
+  }
+
+  .custom-color-control{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  #customHex{
+    width:108px;
+    min-height:32px;
+    padding:6px 8px;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--ink);
+    background:#fff;
+    font:13px "Courier New",monospace;
+    text-transform:uppercase;
+  }
+
+  #customHex:focus{outline:2px solid var(--accent);outline-offset:2px;}
+
+  #customColorBtn{
+    min-height:32px;
+    padding:6px 10px;
+  }
+
+  .info{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px 24px;
+    font-size:13px;
+    color:var(--muted);
+    min-width:0;
+  }
+
+  .info details{
+    flex:0 1 auto;
+    min-width:0
+  }
+
+  .info summary{
+    cursor:pointer;
+    color:var(--ink)
+  }
+
+  .info details p{
+    margin:6px 0 0;
+    line-height:1.5;
+    max-width:900px
+  }
+
+  .info a{color:var(--accent)}
+
+  #status{
+    min-width:0;
+    overflow-wrap:anywhere
+  }
+
+  /* ---------- Vorschau unterhalb der Einstellungen ---------- */
+  main{
+    min-width:0;
+    min-height:0;
+    height:100%;
+    padding:8px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+  }
+
+  #stage{
+    flex:0 1 560px;
+    width:100%;
+    max-width:560px;
+    height:100%;
+    min-width:0;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  canvas{
+    display:block;
+    max-width:100%;
+    cursor:crosshair;
+    touch-action:none;
+    box-shadow:0 10px 40px rgba(87,2,40,.22);
+  }
+
+  @media (max-width:900px){
+    header{padding:10px 14px}
+    .bar{gap:12px 16px}
+    .group + .group{
+      padding-left:0;
+      border-left:0
+    }
+    .spacer{display:none}
+  }
+
+  @media (max-width:600px){
+    .title{
+      width:100%;
+      font-size:18px
+    }
+
+    .group{
+      flex:1 1 100%;
+      align-items:flex-start
+    }
+
+    .button-row{gap:6px}
+    .button-row .group{gap:6px}
+
+    .group[aria-label="Aussehen"] label{
+      flex:1 1 130px
+    }
+
+    .group[aria-label="Aussehen"] label.slider{
+      flex:1 1 130px
+    }
+
+    header{gap:5px}
+    .bar{gap:6px}
+    .group{gap:6px 8px}
+    .info{font-size:11px;gap:4px 12px}
+    main{
+      padding:6px;
+      min-height:0;
+      height:100%;
+    }
+
+    #stage{
+      flex-basis:100%;
+      min-height:0;
+    }
+  }
+
+  @media (max-height:650px) and (min-width:601px){
+    header{padding:6px 10px}
+    main{
+      min-height:0;
+      padding:6px
+    }
+
+    #stage{min-height:0}
+  }
+
+  /* ---------- Grüne Schaltflächen ---------- */
+  button:not(#tray button), .btn{
+    font-family:"Courier New", Courier, monospace;
+    background:#CAFFA6;
+    border-color:#CAFFA6;
+    color:var(--ink);
+  }
+
+  button:not(#tray button):hover:not(:disabled), .btn:hover{
+    background:#b5ed91;
+    border-color:#b5ed91;
+    color:var(--ink);
+  }
+
+  button.primary:not(#tray button), .btn.primary{
+    background:#CAFFA6;
+    border-color:#CAFFA6;
+    color:var(--ink);
+  }
+
+  button.primary:not(#tray button):hover:not(:disabled), .btn.primary:hover{
+    background:#b5ed91;
+    border-color:#b5ed91;
+    color:var(--ink);
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1 class="title">Polaroid Editor</h1>
+
+    <div class="button-row">
+      <div class="group" aria-label="Fotos">
+        <label class="btn primary" for="file" tabindex="0" id="uploadBtn">Fotos hochladen</label>
+        <input id="file" type="file" accept="image/*" multiple="" hidden="">
+        <div id="tray" aria-label="Hochgeladene Fotos"></div>
+      </div>
+
+      <div class="group" aria-label="Aktionen">
+        <button id="place" type="button" disabled="">Mittig ablegen</button>
+        <button id="undo" type="button" disabled="">Einen Schritt zurück</button>
+        <button id="clear" type="button">Alles löschen</button>
+        <button id="export" type="button" class="primary" disabled="">Als PNG exportieren</button>
+      </div>
+    </div>
+
+    <div class="group" aria-label="Aussehen">
+      <label>Beschriftung
+        <input id="caption" type="text" maxlength="40" placeholder="z. B. Sommer 98">
+      </label>
+
+      <label class="slider">
+        <span class="top">
+          <span>Vintage-Stärke</span>
+          <span class="val" id="intVal">70</span>
+        </span>
+        <input id="int" type="range" min="0" max="100" value="70">
+      </label>
+
+      <div class="checks">
+        <label class="row"><input id="tilt" type="checkbox" checked=""> Zufallsneigung</label>
+        <label class="row"><input id="stamp" type="checkbox"> Datumsstempel</label>
+      </div>
+    </div>
+
+    <div class="group" aria-label="Hintergrundfarbe">
+      <label>Hintergrundfarbe</label>
+      <div id="backgroundOptions" role="group" aria-label="Hintergrundfarbe auswählen">
+        <button type="button" data-color="#FFD9F2" aria-label="Rosa" title="#FFD9F2" aria-pressed="true" style="background:#FFD9F2"></button>
+        <button type="button" data-color="#570228" aria-label="Bordeaux" title="#570228" aria-pressed="false" style="background:#570228"></button>
+        <button type="button" data-color="#DCE4B8" aria-label="Hellgrün" title="#DCE4B8" aria-pressed="false" style="background:#DCE4B8"></button>
+        <button type="button" data-color="#515739" aria-label="Olivgrün" title="#515739" aria-pressed="false" style="background:#515739"></button>
+      </div>
+      <div class="custom-color-control">
+        <input id="customHex" type="text" inputmode="text" maxlength="7" placeholder="#AABBCC" aria-label="Eigener HEX-Farbcode">
+        <button id="customColorBtn" type="button">Farbe hinzufügen</button>
+      </div>
+      <span id="colorError" role="status" aria-live="polite" style="font-size:11px;color:#570228"></span>
+    </div>
+
+    <label class="row"><input id="keepBg" type="checkbox"> Hintergrundfarbe exportieren</label>
+  </div>
+
+  <div class="info">
+    <details>
+      <summary>Bedienung</summary>
+      <p>Foto hochladen und auf die Fläche klicken, um ein Polaroid abzulegen. Polaroid anklicken und ziehen: verschieben. Bei Auswahl erscheinen Eckgriffe: an einer quadratischen Ecke ziehen, um proportional zu vergrößern oder zu verkleinern; den runden Griff oben rechts ziehen, um das Polaroid zu drehen. Entf: ausgewähltes Polaroid löschen. Strg/Cmd + Z: einen Schritt zurück. Einstellungen gelten für das jeweils nächste Polaroid.</p>
+    </details>
+
+    <span id="status" aria-live="polite">Alle Fotos und Polaroids wurden gelöscht.</span>
+  </div>
+</header>
+
+<main>
+  <div id="stage">
+    <canvas id="cv" width="1080" height="1350" aria-label="Arbeitsfläche 1080 mal 1350 Pixel" style="width: 365.6px; height: 457px; cursor: crosshair;"></canvas>
+  </div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const W = 1080, H = 1350;
+  const PW = 620, PH = 740, PHOTO = 560, PAD = 30;
+  const MIN_VISIBLE = 100;
+  const MIN_SCALE = 0.2, MAX_SCALE = 2.5;
+  const BACKGROUND_COLORS = ['#FFD9F2', '#570228', '#DCE4B8', '#515739'];
+  let backgroundColor = BACKGROUND_COLORS[0];
+
+  const $ = s => document.querySelector(s);
+  const cv = $('#cv'), ctx = cv.getContext('2d');
+  const clampScale = s => Math.min(MAX_SCALE, Math.max(MIN_SCALE, s));
+
+  let ops = [];
+  let hist = [];
+  let images = [];
+  let active = -1;
+  let sel = null;
+  let drag = null;
+  let shiftHeld = false;
+
+  /* ---------- Skalierung auf Bildschirm ---------- */
+  function fit() {
+    const s = $('#stage');
+    const k = Math.min(s.clientWidth / W, s.clientHeight / H);
+
+    if (k > 0) {
+      cv.style.width = W * k + 'px';
+      cv.style.height = H * k + 'px';
+    }
+  }
+
+  new ResizeObserver(fit).observe($('#stage'));
+  addEventListener('resize', fit);
+
+  /* ---------- Hintergrundfarben auswählen / eigene HEX-Farbe ---------- */
+  function selectBackgroundColor(color, button) {
+    backgroundColor = color.toUpperCase();
+    document.querySelectorAll('#backgroundOptions button').forEach(b => {
+      b.setAttribute('aria-pressed', String(b === button));
+    });
+    redraw();
+  }
+
+  $('#backgroundOptions').addEventListener('click', e => {
+    const button = e.target.closest('button[data-color]');
+    if (!button) return;
+    selectBackgroundColor(button.dataset.color, button);
+    $('#colorError').textContent = '';
+  });
+
+  $('#customColorBtn').addEventListener('click', () => {
+    const input = $('#customHex');
+    let value = input.value.trim();
+    if (!value.startsWith('#')) value = '#' + value;
+
+    if (!/^#[0-9a-fA-F]{6}$/.test(value)) {
+      $('#colorError').textContent = 'Bitte einen gültigen HEX-Code eingeben (z. B. #AABBCC).';
+      input.focus();
+      return;
+    }
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.color = value.toUpperCase();
+    button.title = value.toUpperCase();
+    button.setAttribute('aria-label', 'Eigene Farbe ' + value.toUpperCase());
+    button.setAttribute('aria-pressed', 'false');
+    button.style.background = value;
+    $('#backgroundOptions').appendChild(button);
+
+    selectBackgroundColor(value, button);
+    $('#colorError').textContent = 'Hintergrundfarbe ' + value.toUpperCase() + ' hinzugefügt.';
+    input.value = '';
+  });
+
+  $('#customHex').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('#customColorBtn').click();
+  });
+
+  /* ---------- Cursor → Canvas-Koordinaten ---------- */
+  function toCanvas(e) {
+    const r = cv.getBoundingClientRect();
+
+    return {
+      x: (e.clientX - r.left) * (W / r.width),
+      y: (e.clientY - r.top) * (H / r.height)
+    };
+  }
+
+  /* ---------- Verlauf ---------- */
+  const snapshot = () => ops.map(o => ({ ...o }));
+
+  const pushHist = snap => {
+    hist.push(snap);
+    if (hist.length > 200) hist.shift();
+  };
+
+  /* ---------- Treffer-Test ---------- */
+  function hit(o, px, py) {
+    const dx = px - o.x, dy = py - o.y;
+    const c = Math.cos(o.rot), s = Math.sin(o.rot);
+    const lx = (dx * c + dy * s) / o.s;
+    const ly = (-dx * s + dy * c) / o.s;
+
+    return Math.abs(lx) <= PW / 2 && Math.abs(ly) <= PH / 2;
+  }
+
+  function topAt(px, py) {
+    for (let i = ops.length - 1; i >= 0; i--) {
+      if (hit(ops[i], px, py)) return ops[i];
+    }
+
+    return null;
+  }
+
+  // Ecken des ausgewählten Polaroids: oben rechts = drehen,
+  // die übrigen Ecken = proportional vergrößern/verkleinern.
+  function cornerHandle(o, px, py) {
+    const dx = px - o.x, dy = py - o.y;
+    const c = Math.cos(o.rot), s = Math.sin(o.rot);
+    const lx = (dx * c + dy * s) / o.s;
+    const ly = (-dx * s + dy * c) / o.s;
+    const radius = 48;
+    const corners = [
+      { x:-PW/2, y:-PH/2, mode:'scale' },
+      { x: PW/2, y:-PH/2, mode:'rotate' },
+      { x:-PW/2, y: PH/2, mode:'scale' },
+      { x: PW/2, y: PH/2, mode:'scale' }
+    ];
+
+    for (const corner of corners) {
+      if (Math.hypot(lx - corner.x, ly - corner.y) <= radius) return corner;
+    }
+    return null;
+  }
+
+  /* ---------- Position begrenzen ---------- */
+  function clampPos(o) {
+    const c = Math.abs(Math.cos(o.rot));
+    const s = Math.abs(Math.sin(o.rot));
+    const hw = o.s * (c * PW / 2 + s * PH / 2);
+    const hh = o.s * (s * PW / 2 + c * PH / 2);
+    const mx = Math.min(MIN_VISIBLE, hw * 2);
+    const my = Math.min(MIN_VISIBLE, hh * 2);
+
+    o.x = Math.min(Math.max(o.x, mx - hw), W - mx + hw);
+    o.y = Math.min(Math.max(o.y, my - hh), H - my + hh);
+  }
+
+  /* ---------- Vintage-Look ---------- */
+  function vintage(c, k) {
+    if (k <= 0) return;
+
+    const n = PHOTO;
+    const d = c.getImageData(0, 0, n, n);
+    const a = d.data;
+    const lift = k * 38;
+    const white = 255 - lift - k * 14;
+
+    for (let i = 0; i < a.length; i += 4) {
+      let r = a[i], g = a[i + 1], b = a[i + 2];
+      const l = .3 * r + .59 * g + .11 * b;
+      const sat = 1 - .22 * k;
+
+      r = l + (r - l) * sat;
+      g = l + (g - l) * sat;
+      b = l + (b - l) * sat;
+
+      r += 16 * k;
+      g += 6 * k;
+      b -= 18 * k;
+
+      const sh = 1 - l / 255;
+      g += sh * 7 * k;
+      b += sh * 15 * k;
+
+      r = lift + r * white / 255;
+      g = lift + g * white / 255;
+      b = lift + b * white / 255;
+
+      const noise = (Math.random() - .5) * 36 * k;
+
+      a[i] = r + noise;
+      a[i + 1] = g + noise;
+      a[i + 2] = b + noise;
+    }
+
+    c.putImageData(d, 0, 0);
+
+    const v = c.createRadialGradient(
+      n / 2, n / 2, n * .3,
+      n / 2, n / 2, n * .78
+    );
+
+    v.addColorStop(0, 'rgba(87,2,40,0)');
+    v.addColorStop(1, 'rgba(87,2,40,' + (.5 * k) + ')');
+    c.fillStyle = v;
+    c.fillRect(0, 0, n, n);
+
+    // Lichteinfall an einer zufälligen Kante
+    const cx = Math.random() < .5 ? 0 : n;
+    const cy = Math.random() * n;
+
+    const lk = c.createRadialGradient(cx, cy, 0, cx, cy, n * .6);
+    lk.addColorStop(0, 'rgba(255,140,60,' + (.55 * k) + ')');
+    lk.addColorStop(1, 'rgba(255,140,60,0)');
+
+    c.globalCompositeOperation = 'screen';
+    c.fillStyle = lk;
+    c.fillRect(0, 0, n, n);
+    c.globalCompositeOperation = 'source-over';
+  }
+
+  /* ---------- Polaroid-Karte erzeugen ---------- */
+  function makeCard(img, caption, k, withStamp) {
+    const p = document.createElement('canvas');
+    p.width = p.height = PHOTO;
+
+    const pc = p.getContext('2d');
+    const m = Math.min(img.naturalWidth, img.naturalHeight);
+
+    pc.drawImage(
+      img,
+      (img.naturalWidth - m) / 2,
+      (img.naturalHeight - m) / 2,
+      m, m,
+      0, 0, PHOTO, PHOTO
+    );
+
+    vintage(pc, k);
+
+    if (withStamp) {
+      const t = new Date();
+      const f = n => String(n).padStart(2, '0');
+
+      pc.font = 'bold 30px "Courier New",monospace';
+      pc.textAlign = 'right';
+      pc.shadowColor = 'rgba(255,120,20,.9)';
+      pc.shadowBlur = 8;
+      pc.fillStyle = '#ff9a2e';
+
+      pc.fillText(
+        "'" + f(t.getFullYear() % 100) + ' ' +
+        f(t.getMonth() + 1) + ' ' +
+        f(t.getDate()),
+        PHOTO - 24,
+        PHOTO - 24
+      );
+
+      pc.shadowBlur = 0;
+    }
+
+    const c = document.createElement('canvas');
+    c.width = PW;
+    c.height = PH;
+
+    const x = c.getContext('2d');
+    const g = x.createLinearGradient(0, 0, PW, PH);
+
+    g.addColorStop(0, '#f5f1e6');
+    g.addColorStop(1, '#e9e3d3');
+
+    x.fillStyle = g;
+    x.fillRect(0, 0, PW, PH);
+
+    // Papierstruktur
+    for (let i = 0; i < 1800; i++) {
+      x.fillStyle = 'rgba(90,70,40,' + (Math.random() * .05) + ')';
+      x.fillRect(Math.random() * PW, Math.random() * PH, 2, 2);
+    }
+
+    x.drawImage(p, PAD, PAD);
+
+    x.strokeStyle = 'rgba(0,0,0,.22)';
+    x.lineWidth = 2;
+    x.strokeRect(PAD, PAD, PHOTO, PHOTO);
+
+    if (caption) {
+      const stack = '"Segoe Print","Bradley Hand","Marker Felt","Comic Sans MS",cursive';
+      let size = 50;
+
+      x.font = size + 'px ' + stack;
+
+      const maxW = PW - 2 * PAD - 20;
+      const w = x.measureText(caption).width;
+
+      if (w > maxW) {
+        size = Math.floor(size * maxW / w);
+        x.font = size + 'px ' + stack;
+      }
+
+      x.textAlign = 'center';
+      x.textBaseline = 'middle';
+      x.fillStyle = 'rgba(87,2,40,.85)';
+
+      x.fillText(
+        caption,
+        PW / 2,
+        PAD + PHOTO + (PH - PAD - PHOTO) / 2 + 4
+      );
+    }
+
+    return c;
+  }
+
+  /* ---------- Zeichnen ---------- */
+  function render(c, bg, hint, selected) {
+    c.clearRect(0, 0, W, H);
+
+    if (bg) {
+      c.fillStyle = bg;
+      c.fillRect(0, 0, W, H);
+    }
+
+    for (const o of ops) {
+      c.save();
+      c.translate(o.x, o.y);
+      c.rotate(o.rot);
+      c.scale(o.s, o.s);
+
+      c.shadowColor = 'rgba(87,2,40,.35)';
+      c.shadowBlur = 30;
+      c.shadowOffsetY = 12;
+
+      c.drawImage(o.card, -PW / 2, -PH / 2);
+      c.restore();
+    }
+
+    if (selected && ops.includes(selected)) {
+      c.save();
+      c.translate(selected.x, selected.y);
+      c.rotate(selected.rot);
+      c.scale(selected.s, selected.s);
+
+      c.lineWidth = 3 / selected.s;
+      c.setLineDash([14 / selected.s, 10 / selected.s]);
+      c.strokeStyle = 'rgba(255,255,255,.95)';
+      c.strokeRect(-PW / 2 - 8, -PH / 2 - 8, PW + 16, PH + 16);
+
+      // Drei quadratische Skaliergriffe und ein runder Drehgriff oben rechts.
+      const handles = [
+        {x:-PW/2, y:-PH/2, rotate:false},
+        {x: PW/2, y:-PH/2, rotate:true},
+        {x:-PW/2, y: PH/2, rotate:false},
+        {x: PW/2, y: PH/2, rotate:false}
+      ];
+      c.setLineDash([]);
+      handles.forEach(h => {
+        c.beginPath();
+        if (h.rotate) {
+          c.arc(h.x, h.y, 19 / selected.s, 0, Math.PI * 2);
+        } else {
+          c.rect(h.x - 17 / selected.s, h.y - 17 / selected.s,
+                 34 / selected.s, 34 / selected.s);
+        }
+        c.fillStyle = '#FFD9F2';
+        c.fill();
+        c.lineWidth = 4 / selected.s;
+        c.strokeStyle = '#570228';
+        c.stroke();
+      });
+
+      c.restore();
+    }
+
+    if (hint && !ops.length) {
+      c.fillStyle = 'rgba(255,255,255,.8)';
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.font = '44px Futura,"Trebuchet MS",system-ui,sans-serif';
+      c.fillText('Foto hochladen oder hierher ziehen', W / 2, H / 2);
+    }
+  }
+
+  const redraw = () => {
+    render(ctx, backgroundColor, true, sel);
+    updateUI();
+  };
+
+  function updateUI() {
+    $('#undo').disabled = !hist.length;
+    $('#clear').disabled = false;
+    $('#export').disabled = !ops.length;
+    $('#place').disabled = active < 0;
+  }
+
+  /* ---------- Polaroid ablegen ---------- */
+  function place(i, x, y) {
+    if (i < 0 || !images[i]) return;
+
+    const k = +$('#int').value / 100;
+    const rot = $('#tilt').checked
+      ? (Math.random() * 12 - 6) * Math.PI / 180
+      : 0;
+
+    pushHist(snapshot());
+
+    const o = {
+      card: makeCard(
+        images[i].img,
+        $('#caption').value.trim(),
+        k,
+        $('#stamp').checked
+      ),
+      x,
+      y,
+      rot,
+      s: 0.75
+    };
+
+    clampPos(o);
+    ops.push(o);
+    sel = o;
+    redraw();
+  }
+
+  /* ---------- Upload ---------- */
+  function addFiles(files, at) {
+    [...files]
+      .filter(f => f.type.startsWith('image/'))
+      .forEach((f, n) => {
+        const url = URL.createObjectURL(f);
+        const img = new Image();
+
+        img.onload = () => {
+          images.push({ img, url });
+          setActive(images.length - 1);
+          renderTray();
+
+          const jitter = () => (Math.random() - .5) * 120;
+
+          const px = at
+            ? at.x + n * 40
+            : W / 2 + jitter();
+
+          const py = at
+            ? at.y + n * 40
+            : H / 2 + jitter();
+
+          place(active, px, py);
+        };
+
+        img.src = url;
+      });
+  }
+
+  function setActive(i) {
+    active = i;
+    renderTray();
+    updateUI();
+  }
+
+  function renderTray() {
+    const t = $('#tray');
+    t.textContent = '';
+
+    images.forEach((im, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = i === active ? 'on' : '';
+      b.setAttribute('aria-label', 'Foto ' + (i + 1) + ' wählen');
+
+      const el = document.createElement('img');
+      el.src = im.url;
+      el.alt = '';
+
+      b.appendChild(el);
+      b.onclick = () => setActive(i);
+      t.appendChild(b);
+    });
+  }
+
+  $('#file').addEventListener('change', e => {
+    addFiles(e.target.files);
+    e.target.value = '';
+  });
+
+  $('#uploadBtn').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      $('#file').click();
+    }
+  });
+
+  /* ---------- Shift-Status verfolgen ---------- */
+  addEventListener('keydown', e => {
+    if (e.key === 'Shift') shiftHeld = true;
+  });
+
+  addEventListener('keyup', e => {
+    if (e.key === 'Shift') shiftHeld = false;
+  });
+
+  addEventListener('blur', () => {
+    shiftHeld = false;
+  });
+
+  /* ---------- Interaktion auf der Fläche ---------- */
+  cv.addEventListener('contextmenu', e => e.preventDefault());
+
+  cv.addEventListener('pointerdown', e => {
+    if (drag) return;
+
+    const isMouse = e.pointerType === 'mouse';
+
+    if (isMouse && e.button !== 0 && e.button !== 2) return;
+
+    const right = isMouse && e.button === 2;
+    const shift = e.shiftKey || shiftHeld;
+
+    const p = toCanvas(e);
+    const o = topAt(p.x, p.y);
+
+    if (!o) {
+      if (right || shift) return;
+
+      sel = null;
+
+      if (active >= 0) {
+        place(active, p.x, p.y);
+      } else if (!images.length) {
+        $('#file').click();
+      } else {
+        redraw();
+      }
+
+      return;
+    }
+
+    e.preventDefault();
+
+    const snap = snapshot();
+    const idx = ops.indexOf(o);
+    const reordered = idx !== ops.length - 1;
+
+    if (reordered) {
+      ops.splice(idx, 1);
+      ops.push(o);
+    }
+
+    sel = o;
+    const handle = cornerHandle(o, p.x, p.y);
+    const mode = handle ? handle.mode : (shift ? 'scale' : 'move');
+
+    if (mode === 'scale') {
+      const startDistance = Math.hypot(p.x - o.x, p.y - o.y);
+      drag = {
+        mode:'scale', o, sx:p.x, sy:p.y,
+        s0:o.s, startDistance,
+        snap, moved:false, reordered, id:e.pointerId
+      };
+      cv.style.cursor = 'nwse-resize';
+    } else if (mode === 'rotate') {
+      drag = {
+        mode:'rotate', o,
+        startAngle:Math.atan2(p.y - o.y, p.x - o.x),
+        startRotation:o.rot,
+        snap, moved:false, reordered, id:e.pointerId
+      };
+      cv.style.cursor = 'grab';
+    } else {
+      drag = {
+        mode:'move', o,
+        dx:p.x - o.x, dy:p.y - o.y,
+        snap, moved:false, reordered, id:e.pointerId
+      };
+      cv.style.cursor = 'grabbing';
+    }
+
+    try {
+      cv.setPointerCapture(e.pointerId);
+    } catch (_) {}
+
+    redraw();
+  });
+
+  cv.addEventListener('pointermove', e => {
+    const p = toCanvas(e);
+
+    if (drag && e.pointerId === drag.id) {
+      if (drag.mode === 'move') {
+        drag.o.x = p.x - drag.dx;
+        drag.o.y = p.y - drag.dy;
+      } else if (drag.mode === 'scale') {
+        const distance = Math.hypot(p.x - drag.o.x, p.y - drag.o.y);
+        const factor = distance / Math.max(1, drag.startDistance);
+        drag.o.s = clampScale(drag.s0 * factor);
+      } else if (drag.mode === 'rotate') {
+        const angle = Math.atan2(p.y - drag.o.y, p.x - drag.o.x);
+        drag.o.rot = drag.startRotation + angle - drag.startAngle;
+      }
+
+      clampPos(drag.o);
+      drag.moved = true;
+      redraw();
+    } else if (!drag) {
+      const over = topAt(p.x, p.y);
+      const handle = over ? cornerHandle(over, p.x, p.y) : null;
+
+      cv.style.cursor = handle
+        ? (handle.mode === 'rotate' ? 'grab' : 'nwse-resize')
+        : over
+          ? ((e.shiftKey || shiftHeld) ? 'nwse-resize' : 'grab')
+          : 'crosshair';
+    }
+  });
+
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+
+    if (drag.moved || drag.reordered) {
+      pushHist(drag.snap);
+    }
+
+    drag = null;
+
+    const p = toCanvas(e);
+    cv.style.cursor = topAt(p.x, p.y) ? 'grab' : 'crosshair';
+
+    updateUI();
+  }
+
+  cv.addEventListener('pointerup', endDrag);
+  cv.addEventListener('pointercancel', endDrag);
+
+  /* ---------- Shift + Mausrad skaliert das Polaroid ---------- */
+  let wheelSnap = null;
+  let wheelTimer = null;
+
+  cv.addEventListener('wheel', e => {
+    if (!(e.shiftKey || shiftHeld) || drag) return;
+
+    const p = toCanvas(e);
+    const o = topAt(p.x, p.y);
+
+    if (!o) return;
+
+    e.preventDefault();
+
+    if (!wheelSnap) {
+      wheelSnap = snapshot();
+    }
+
+    sel = o;
+
+    const dy = e.deltaY || e.deltaX;
+    o.s = clampScale(o.s * Math.exp(-dy / 600));
+
+    clampPos(o);
+    redraw();
+
+    clearTimeout(wheelTimer);
+
+    wheelTimer = setTimeout(() => {
+      pushHist(wheelSnap);
+      wheelSnap = null;
+      updateUI();
+    }, 400);
+  }, { passive: false });
+
+  cv.addEventListener('dragover', e => e.preventDefault());
+
+  cv.addEventListener('drop', e => {
+    e.preventDefault();
+    addFiles(e.dataTransfer.files, toCanvas(e));
+  });
+
+  $('#place').onclick = () => {
+    place(active, W / 2, H / 2);
+  };
+
+  /* ---------- Rückgängig / Entf / Löschen ---------- */
+  function undo() {
+    if (!hist.length || drag) return;
+
+    ops = hist.pop();
+    sel = null;
+    redraw();
+  }
+
+  $('#undo').onclick = undo;
+
+  function deleteSelected() {
+    if (!sel || drag || !ops.includes(sel)) return;
+
+    pushHist(snapshot());
+    ops = ops.filter(o => o !== sel);
+    sel = null;
+
+    redraw();
+  }
+
+  addEventListener('keydown', e => {
+    const typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !typing) {
+      e.preventDefault();
+      undo();
+    } else if ((e.key === 'Delete' || e.key === 'Backspace') && !typing) {
+      if (sel) {
+        e.preventDefault();
+        deleteSelected();
+      }
+    }
+  });
+
+  $('#clear').addEventListener('click', () => {
+    // Alle Polaroids und hochgeladenen Fotos vollständig zurücksetzen.
+    ops = [];
+    hist = [];
+    sel = null;
+    drag = null;
+    wheelSnap = null;
+    clearTimeout(wheelTimer);
+
+    images.forEach(item => URL.revokeObjectURL(item.url));
+    images = [];
+    active = -1;
+
+    renderTray();
+    redraw();
+    $('#status').textContent = 'Alle Fotos und Polaroids wurden gelöscht.';
+    updateUI();
+  });
+
+  /* ---------- Export als PNG ---------- */
+  let lastBlobUrl = null;
+
+  $('#export').addEventListener('click', () => {
+    if (!ops.length) return;
+
+    const status = $('#status');
+
+    try {
+      const out = document.createElement('canvas');
+      out.width = W;
+      out.height = H;
+
+      render(
+        out.getContext('2d'),
+        $('#keepBg').checked ? backgroundColor : null,
+        false,
+        null
+      );
+
+      // Direkter Download
+      const a = document.createElement('a');
+      a.href = out.toDataURL('image/png');
+      a.download = 'polaroid.png';
+      a.style.display = 'none';
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      status.textContent = 'PNG wurde exportiert (polaroid.png).';
+
+      // Ersatzlink, falls der Browser Downloads blockiert
+      out.toBlob(b => {
+        if (!b) return;
+
+        if (lastBlobUrl) {
+          URL.revokeObjectURL(lastBlobUrl);
+        }
+
+        lastBlobUrl = URL.createObjectURL(b);
+
+        const link = document.createElement('a');
+        link.href = lastBlobUrl;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Bild in neuem Tab öffnen';
+
+        status.textContent = 'PNG wurde exportiert. Kein Download? ';
+        status.appendChild(link);
+        status.appendChild(
+          document.createTextNode(' und dort mit Rechtsklick speichern.')
+        );
+      }, 'image/png');
+
+    } catch (err) {
+      status.textContent = 'Export fehlgeschlagen: ' + err.message;
+    }
+  });
+
+  /* ---------- Regler-Anzeige ---------- */
+  $('#int').oninput = e => {
+    $('#intVal').textContent = e.target.value;
+  };
+
+  fit();
+  redraw();
+})();
+</script>
+
+</body></html>

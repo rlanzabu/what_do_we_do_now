@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duotone Halftone</title>
+    <style>
+        /* ============================================================
+        MINIMAL STYLE
+        Quiet surfaces, hairline borders, generous whitespace.
+        Palette: #BADE4F (lime) #6E8EEC (blue) #282B26 (ink) #F0ECE5 (paper)
+        ============================================================ */
+        :root {
+            color-scheme: dark;
+            --bg: #282b26;
+            --panel: #2e322c;
+            --surface: #343831;
+            --text: #f0ece5;
+            --muted: #a7a69d;
+            --hairline: #3d413a;
+            --accent: #bade4f;
+            --accent-hover: #c9ec6b;
+            --accent-text: #282b26;
+            --secondary: #6e8eec;
+            --secondary-hover: #8aa4f2;
+            --focus: #6e8eec;
+            /* Uniform control sizing */
+            --ctl-height: 34px;
+            --ctl-border: 1px;
+            --ctl-inner: calc(var(--ctl-height) - 2 * var(--ctl-border));
+            --radius: 6px;
+
+            /* Centered header contents on wide screens */
+            --shell-width: 1160px;
+            }
+        :root[data-theme="light"] {
+            color-scheme: light;
+            --bg: #f0ece5;
+            --panel: #f7f4ee;
+            --surface: #e9e4da;
+            --text: #282b26;
+            --muted: #7a776d;
+            --hairline: #dcd6c9;
+            --accent: #6e8eec;
+            --accent-hover: #8aa4f2;
+            --accent-text: #f0ece5;
+            --secondary: #bade4f;
+            --secondary-hover: #c9ec6b;
+            --focus: #6e8eec;
+        }
+        ●	{ box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+            font-weight: 500;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        ::selection { background: var(--accent); color: var(--accent-text); }
+        header {
+            width: 100%;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--hairline);
+            background: var(--bg);
+            z-index: 10;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: min(100%, var(--shell-width));
+            margin: 0 auto;
+        }
+        header h1 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 0.04em;
+            color: var(--text);
+        }
+        header h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+        /* ---------- Workspace: single tool panel left of the canvas ---------- */
+        .workspace {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 32px;
+            min-height: 0;
+            padding: 20px 20px 24px;
+        }
+        /* The panel takes exactly the height its content needs — no internal
+         scrolling, so popovers are never clipped or forced into a scrollbar. */
+        .tool-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            width: 210px;
+        }
+        /* Panel section captions */
+        .panel-title {
+            font-size: 0.68rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 12px 0 2px;
+        }
+        .panel-title:first-child { margin-top: 0; }
+        .control-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            position: relative;
+            padding: 0 10px;
+            background: var(--panel);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius);
+            height: var(--ctl-height);
+            overflow: visible;
+        }
+        label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        input[type="range"] {
+            width: 92px;
+            accent-color: var(--accent);
+        }
+        #lpiValue {
+            min-width: 3ch;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+        /* ---------- Minimal buttons ---------- */
+        button, .upload-label {
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius);
+            height: var(--ctl-height);
+            padding: 0 14px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
+        }
+        button:hover, .upload-label:hover {
+            border-color: var(--secondary);
+            background: var(--surface);
+        }
+        button:focus-visible, .upload-label:focus-visible, #themeToggle:focus-visible, select:focus-visible {
+            outline: 2px solid var(--focus);
+            outline-offset: 2px;
+        }
+        /* Primary actions carry the accent */
+        #uploadBtn, #exportBtn {
+            background: var(--accent);
+            color: var(--accent-text);
+            border-color: var(--accent);
+        }
+        #uploadBtn:hover, #exportBtn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        button:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        #exportBtn:disabled {
+            background: var(--panel);
+            color: var(--muted);
+            border-color: var(--hairline);
+        }
+        /* Swap lives inside a bordered group, so it fits the inner height */
+        #swapBtn {
+            background: transparent;
+            color: var(--text);
+            height: var(--ctl-inner);
+            padding: 0 10px;
+            font-size: 0.75rem;
+            border: none;
+            border-radius: calc(var(--radius) - 1px);
+        }
+        #swapBtn:hover { background: var(--surface); }
+        /* Theme toggle: compact, tucked in the header */
+        #themeToggle {
+            background: transparent;
+            color: var(--muted);
+            border-color: transparent;
+            width: 36px;
+            padding: 0;
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+        #themeToggle:hover {
+            background: var(--surface);
+            color: var(--text);
+            border-color: var(--hairline);
+        }
+        /* Visually hidden but still clickable file input */
+        #uploadInput {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            pointer-events: none;
+        }
+        /* Ramp preview: a quiet swatch of the current gradient */
+        .ramp-preview {
+            width: 48px;
+            height: 14px;
+            border-radius: 3px;
+            background-image: linear-gradient(to right,
+            var(--accent-deep, #888) 0 25%, var(--accent) 25% 50%,
+            var(--secondary) 50% 75%, var(--text) 75% 100%);
+        }
+        /* ---------- Shape selector ---------- */
+        select {
+            height: var(--ctl-inner);
+            background: transparent;
+            color: var(--text);
+            border: none;
+            border-radius: 0;
+            padding: 0 2px;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        select:hover { color: var(--accent); }
+        /* ---------- Color wheel picker ---------- */
+        .color-picker-btn {
+            width: 26px;
+            height: 20px;
+            border: 1px solid var(--hairline);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0;
+            background: var(--accent);
+            transition: border-color 0.15s ease;
+        }
+        .color-picker-btn:hover {
+            border-color: var(--secondary);
+        }
+        .color-picker-btn.active {
+            outline: 2px solid var(--focus);
+            outline-offset: 2px;
+        }
+        /* Dropdown: floating panel with the wheel. Opens below its button by
+         default; JS flips it above the button when there is no room below,
+         so the full wheel is always on screen and nothing starts scrolling. */
+        .color-picker-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            background: var(--panel);
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            padding: 12px;
+            z-index: 100;
+            display: none;
+        }
+        .color-picker-dropdown.open { display: block; }
+        .color-picker-dropdown-header {
+            font-size: 0.68rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .wheel-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .color-wheel-wrap {
+            position: relative;
+            width: 156px;
+            height: 156px;
+            touch-action: none;
+        }
+        canvas.color-wheel {
+            display: block;
+            width: 156px;
+            height: 156px;
+            border-radius: 50%;
+            cursor: crosshair;
+        }
+        /* Crosshair marker riding on the wheel */
+        .wheel-marker {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+        }
+        /* Brightness (value) slider beside the wheel */
+        .value-slider {
+            writing-mode: vertical-lr;
+            direction: rtl;
+            width: 18px;
+            height: 156px;
+            -webkit-appearance: none;
+            appearance: none;
+            border: 1px solid var(--hairline);
+            border-radius: 9px;
+            padding: 0;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #ff0000, #000000);
+        }
+        .value-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 10px;
+            border-radius: 3px;
+            background: #fff;
+            border: 1px solid #282b26;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+        .value-slider::-moz-range-thumb {
+            width: 16px;
+            height: 8px;
+            border-radius: 3px;
+            background: #fff;
+            border: 1px solid #282b26;
+        }
+        .value-slider:focus-visible {
+            outline: 2px solid var(--focus);
+            outline-offset: 2px;
+        }
+        .wheel-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .color-wheel-preview {
+            width: 30px;
+            height: 26px;
+            border-radius: 4px;
+            border: 1px solid var(--hairline);
+            flex: none;
+        }
+        .color-wheel-hex {
+            flex: 1;
+            min-width: 0;
+            padding: 5px 7px;
+            background: var(--surface);
+            border: 1px solid var(--hairline);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 0.75rem;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .color-wheel-ok {
+            height: 28px;
+            padding: 0 12px;
+            font-size: 0.72rem;
+            background: var(--accent);
+            color: var(--accent-text);
+            border-color: var(--accent);
+        }
+        .color-wheel-ok:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+        /* ---------- Canvas stage (sizing unchanged) ---------- */
+        #canvasWrap {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 1080 / 1350;
+            overflow: hidden;
+            border: 1px solid var(--hairline);
+            border-radius: var(--radius);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        :root[data-theme="light"] #canvasWrap {
+            box-shadow: 0 12px 40px rgba(40, 43, 38, 0.12);
+        }
+        canvas {
+            display: block;
+            max-width: 100%;
+            max-height: calc(100vh - 190px);
+            height: auto;
+            width: auto;
+        }
+        .dropzone {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            background: var(--bg);
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            border: 1px dashed var(--hairline);
+            border-radius: var(--radius);
+            transition: border-color 0.15s ease, color 0.15s ease;
+        }
+        .dropzone.dragover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .dropzone strong { color: var(--accent); font-weight: 500; }
+        .dropzone svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--secondary);
+        }
+        /* ---------- Narrow screens: panel moves above the canvas ---------- */
+        @media (max-width: 980px) {
+            .workspace {
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                overflow-y: auto;
+            }
+            .tool-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                width: auto;
+            }
+
+            .panel-title { display: none; }
+            }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <h1>Dotty<em>The Halftone Tool</em></h1>
+        <button id="themeToggle" type="button" aria-label="Switch to light mode" title="Switch to light mode">◑</button>
+    </div>
+</header>
+<div class="workspace">
+    <!-- LEFT PANEL: all tools -->
+    <div class="tool-panel">
+        <input type="file" id="uploadInput" accept="image/*">
+        <span class="panel-title">Source</span>
+        <span class="upload-label" id="uploadBtn" role="button" tabindex="0">Upload Picture</span>
+
+        <span class="panel-title">Screen</span>
+        <div class="control-group">
+            <label for="lpi">LPI</label>
+            <input type="range" id="lpi" min="0" max="180" value="45" step="1">
+            <span id="lpiValue">45</span>
+        </div>
+
+        <div class="control-group">
+            <label for="shapeSelect">Shape</label>
+            <select id="shapeSelect" title="Halftone dot shape">
+                <option value="circle" selected>Circle</option>
+                <option value="square">Square</option>
+                <option value="diamond">Diamond</option>
+                <option value="line">Lines</option>
+            </select>
+        </div>
+
+        <span class="panel-title">Colors</span>
+        <div class="control-group">
+            <label for="shadowColor">Shadows</label>
+            <button type="button" class="color-picker-btn" id="shadowBtn" title="Shadow color picker"></button>
+            <div class="color-picker-dropdown" id="shadowPicker">
+                <div class="color-picker-dropdown-header">Shadow Color</div>
+                <div class="wheel-row">
+                    <div class="color-wheel-wrap">
+                        <canvas class="color-wheel" id="shadowWheel" width="156" height="156"></canvas>
+                        <div class="wheel-marker" id="shadowMarker"></div>
+                    </div>
+                    <input type="range" class="value-slider" id="shadowValue" min="0" max="100" value="100"
+                           title="Brightness">
+                </div>
+                <div class="wheel-footer">
+                    <span class="color-wheel-preview" id="shadowPreview"></span>
+                    <input type="text" class="color-wheel-hex" id="shadowHex" value="#282b26" spellcheck="false">
+                    <button type="button" class="color-wheel-ok" id="shadowOk">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="highlightColor">Highlights</label>
+            <button type="button" class="color-picker-btn" id="highlightBtn" title="Highlight color picker"></button>
+            <div class="color-picker-dropdown" id="highlightPicker">
+                <div class="color-picker-dropdown-header">Highlight Color</div>
+                <div class="wheel-row">
+                    <div class="color-wheel-wrap">
+                        <canvas class="color-wheel" id="highlightWheel" width="156" height="156"></canvas>
+                        <div class="wheel-marker" id="highlightMarker"></div>
+                    </div>
+                    <input type="range" class="value-slider" id="highlightValue" min="0" max="100" value="100"
+                           title="Brightness">
+                </div>
+                <div class="wheel-footer">
+                    <span class="color-wheel-preview" id="highlightPreview"></span>
+                    <input type="text" class="color-wheel-hex" id="highlightHex" value="#f0ece5" spellcheck="false">
+                    <button type="button" class="color-wheel-ok" id="highlightOk">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <span class="ramp-preview" id="rampPreview" aria-hidden="true"></span>
+            <button id="swapBtn" type="button" title="Swap the two duotone colors">Swap</button>
+        </div>
+
+        <span class="panel-title">Output</span>
+        <button id="exportBtn" disabled>Export PNG</button>
+        </div>
+    <!-- CENTER-RIGHT: the canvas workbench (sizing unchanged) -->
+    <div id="canvasWrap">
+        <canvas id="canvas" width="1080" height="1350"></canvas>
+        <div class="dropzone" id="dropzone">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-5H3v5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-5h-2zM11 4.83 8.41 7.41 7 6l5-5 5 5-1.41 1.41L13 4.83V16h-2V4.83z"/></svg>
+            <span><strong>Click or drop an image</strong><br>Convert it to a duotone halftone</span>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        "use strict";
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var dropzone = document.getElementById("dropzone");
+        var uploadInput = document.getElementById("uploadInput");
+        var uploadBtn = document.getElementById("uploadBtn");
+        var lpiSlider = document.getElementById("lpi");
+        var lpiValue = document.getElementById("lpiValue");
+        var shapeSelect = document.getElementById("shapeSelect");
+        var swapBtn = document.getElementById("swapBtn");
+        var rampPreview = document.getElementById("rampPreview");
+        var exportBtn = document.getElementById("exportBtn");
+        var themeToggle = document.getElementById("themeToggle");
+// Store colors in hex format for consistent parsing
+        var shadowColorHex = "#282b26";
+        var highlightColorHex = "#f0ece5";
+// Selected halftone dot shape: 'circle' | 'square' | 'diamond' | 'line'
+        var shapeMode = "circle";
+        var activeColorPicker = null; // 'shadow' | 'highlight' | null
+// Assumed resolution of the working canvas; LPI is lines per inch,
+        // so the halftone cell size in canvas pixels is PPI / LPI.
+        var PPI = 300;
+// Number of discrete tone bands used when colouring the dots.
+        var BANDS = 12;
+        var sourceImage = null;
+        var sampledData = null;
+        var renderPending = false;
+// ---------- Theme ----------
+        var THEME_KEY = "duotone-halftone-theme";
+        function readStoredTheme() {
+            try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+        }
+        function storeTheme(theme) {
+            try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
+        }
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            var nextLabel = theme === "light" ? "Switch to dark mode" : "Switch to light mode";
+            themeToggle.setAttribute("aria-label", nextLabel);
+            themeToggle.setAttribute("title", nextLabel);
+            themeToggle.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+        }
+        function initialTheme() {
+            var stored = readStoredTheme();
+            if (stored === "light" || stored === "dark") return stored;
+            if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+                return "light";
+            }
+            return "dark";
+        }
+        applyTheme(initialTheme());
+        themeToggle.addEventListener("click", function () {
+            var current = document.documentElement.getAttribute("data-theme");
+            var next = current === "light" ? "dark" : "light";
+            applyTheme(next);
+            storeTheme(next);
+        });
+// ---------- Color Helpers ----------
+        function hexToRgb(hex) {
+            var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex).trim().toLowerCase());
+            if (!m) return [0, 0, 0];
+            return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
+        }
+        function rgbToHex(r, g, b) {
+            function h2(v) { return v.toString(16).padStart(2, "0"); }
+            return "#" + h2(r) + h2(g) + h2(b);
+        }
+        function css(rgb) {
+            return "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+        }
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            var max = Math.max(r, g, b), min = Math.min(r, g, b);
+            var d = max - min;
+            var h = 0, s = max === 0 ? 0 : d / max, v = max;
+            if (d !== 0) {
+                if (max === r) h = 60 * (((g - b) / d) % 6);
+                else if (max === g) h = 60 * ((b - r) / d + 2);
+                else h = 60 * ((r - g) / d + 4);
+                if (h < 0) h += 360;
+            }
+            return { h: h, s: s, v: v };
+        }
+        function hsvToRgb(h, s, v) {
+            h = ((h % 360) + 360) % 360;
+            var c = v * s;
+            var x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            var m = v - c;
+            var rgb1;
+            if (h < 60) rgb1 = [c, x, 0];
+            else if (h < 120) rgb1 = [x, c, 0];
+            else if (h < 180) rgb1 = [0, c, x];
+            else if (h < 240) rgb1 = [0, x, c];
+            else if (h < 300) rgb1 = [x, 0, c];
+            else rgb1 = [c, 0, x];
+            return [
+                Math.round((rgb1[0] + m) * 255),
+                Math.round((rgb1[1] + m) * 255),
+                Math.round((rgb1[2] + m) * 255)
+            ];
+        }
+        function updateColorButton(btn, hex) {
+            btn.style.backgroundColor = hex;
+            shadowColorHex = shadowBtn === btn ? hex : shadowColorHex;
+            highlightColorHex = highlightBtn === btn ? hex : highlightColorHex;
+        }
+        var shadowBtn = document.getElementById("shadowBtn");
+        var highlightBtn = document.getElementById("highlightBtn");
+// ---------- Color Wheel Picker ----------
+// Renders the hue/saturation disc once per picker canvas.
+        // Centre = white (saturation 0), rim = full saturation; hue varies
+        // with the angle. Value (brightness) is handled by the slider.
+        function drawColorWheel(cv) {
+            var c = cv.getContext("2d");
+            var size = cv.width;
+            var r = size / 2;
+            var img = c.createImageData(size, size);
+            var d = img.data;
+            for (var y = 0; y < size; y++) {
+                for (var x = 0; x < size; x++) {
+                    var dx = x - r + 0.5;
+                    var dy = y - r + 0.5;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    var i = (y * size + x) * 4;
+                    if (dist > r) { d[i + 3] = 0; continue; }
+                    var hue = Math.atan2(dy, dx) * 180 / Math.PI;
+                    if (hue < 0) hue += 360;
+                    var sat = Math.min(1, dist / r);
+                    var rgb = hsvToRgb(hue, sat, 1);
+                    d[i] = rgb[0]; d[i + 1] = rgb[1]; d[i + 2] = rgb[2];
+                    // 1px soft edge so the disc is not jagged
+                    var edge = r - dist;
+                    d[i + 3] = edge >= 1 ? 255 : Math.max(0, Math.round(edge * 255));
+                }
+            }
+            c.putImageData(img, 0, 0);
+        }
+// Keeps an open dropdown fully inside the window: below its button when
+        // there is room, flipped above it otherwise. Ensures the whole wheel is
+        // visible without any scrolling appearing on the page.
+        function positionDropdownInWindow(picker) {
+            picker.style.top = "calc(100% + 8px)";
+            picker.style.bottom = "auto";
+            var rect = picker.getBoundingClientRect();
+            if (rect.bottom > window.innerHeight - 8) {
+                picker.style.top = "auto";
+                picker.style.bottom = "calc(100% + 8px)";
+            }
+        }
+// Per-slot picker state + wiring. state is {h:0..360, s:0..1, v:0..1}.
+        function setupWheelPicker(opts) {
+            var btn = opts.btn;
+            var picker = opts.picker;
+            var wheel = opts.wheel;
+            var marker = opts.marker;
+            var valueSlider = opts.valueSlider;
+            var preview = opts.preview;
+            var hexInput = opts.hexInput;
+            var okBtn = opts.okBtn;
+var state = { h: 0, s: 0, v: 1 };
+
+            function applyColor(hex) {
+                updateColorButton(btn, hex);
+                updateRampPreview();
+                render();
+            }
+
+            function syncFromState() {
+                var rgb = hsvToRgb(state.h, state.s, state.v);
+                var hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
+
+                // Marker position on the disc
+                var wrapRect = 78; // wheel radius in px (156 / 2)
+                var rad = state.s * wrapRect;
+                var ang = state.h * Math.PI / 180;
+                marker.style.left = (wrapRect + Math.cos(ang) * rad) + "px";
+                marker.style.top = (wrapRect + Math.sin(ang) * rad) + "px";
+
+                // Brightness slider gradient follows the current hue/sat
+                var full = hsvToRgb(state.h, state.s, 1);
+                valueSlider.style.background =
+                    "linear-gradient(to bottom, rgb(" + full.join(",") + "), #000)";
+
+                preview.style.backgroundColor = hex;
+                if (document.activeElement !== hexInput) hexInput.value = hex;
+
+                applyColor(hex);
+            }
+
+            function setFromHex(hex) {
+                var rgb = hexToRgb(hex);
+                var hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
+                state.h = hsv.h; state.s = hsv.s; state.v = hsv.v;
+                syncFromState();
+            }
+
+            function pointToColor(ev) {
+                var rect = wheel.getBoundingClientRect();
+                var scale = wheel.width / rect.width;
+                var mx = (ev.clientX - rect.left) * scale;
+                var my = (ev.clientY - rect.top) * scale;
+                var r = wheel.width / 2;
+                var dx = mx - r, dy = my - r;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                var s = Math.min(1, dist / r);
+                var h = Math.atan2(dy, dx) * 180 / Math.PI;
+                if (h < 0) h += 360;
+                state.h = h;
+                state.s = s;
+                syncFromState();
+            }
+
+            var dragging = false;
+
+            wheel.addEventListener("pointerdown", function (e) {
+                dragging = true;
+                wheel.setPointerCapture(e.pointerId);
+                pointToColor(e);
+            });
+            wheel.addEventListener("pointermove", function (e) {
+                if (dragging) pointToColor(e);
+            });
+            wheel.addEventListener("pointerup", function () { dragging = false; });
+            wheel.addEventListener("pointercancel", function () { dragging = false; });
+
+            valueSlider.addEventListener("input", function () {
+                state.v = parseInt(valueSlider.value, 10) / 100;
+                syncFromState();
+            });
+
+            hexInput.addEventListener("input", function () {
+                var val = this.value.trim().toLowerCase();
+                if (/^#?[0-9a-f]{6}$/.test(val)) {
+                    setFromHex(val);
+                }
+            });
+
+            okBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                closeAllColorPickers();
+            });
+
+            picker.addEventListener("click", function (e) { e.stopPropagation(); });
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                if (activeColorPicker === opts.id) {
+                    closeAllColorPickers();
+                } else {
+                    closeAllColorPickers();
+                    activeColorPicker = opts.id;
+                    btn.classList.add("active");
+                    picker.classList.add("open");
+                    setFromHex(btn === shadowBtn ? shadowColorHex : highlightColorHex);
+                    positionDropdownInWindow(picker);
+                }
+            });
+
+            return {
+                refreshFromCurrent: function () {
+                    setFromHex(btn === shadowBtn ? shadowColorHex : highlightColorHex);
+                }
+            };
+}
+        drawColorWheel(document.getElementById("shadowWheel"));
+        drawColorWheel(document.getElementById("highlightWheel"));
+        var shadowPickerCtl = setupWheelPicker({
+            id: "shadow",
+            btn: shadowBtn,
+            picker: document.getElementById("shadowPicker"),
+            wheel: document.getElementById("shadowWheel"),
+            marker: document.getElementById("shadowMarker"),
+            valueSlider: document.getElementById("shadowValue"),
+            preview: document.getElementById("shadowPreview"),
+            hexInput: document.getElementById("shadowHex"),
+            okBtn: document.getElementById("shadowOk")
+        });
+        var highlightPickerCtl = setupWheelPicker({
+            id: "highlight",
+            btn: highlightBtn,
+            picker: document.getElementById("highlightPicker"),
+            wheel: document.getElementById("highlightWheel"),
+            marker: document.getElementById("highlightMarker"),
+            valueSlider: document.getElementById("highlightValue"),
+            preview: document.getElementById("highlightPreview"),
+            hexInput: document.getElementById("highlightHex"),
+            okBtn: document.getElementById("highlightOk")
+        });
+        function closeAllColorPickers() {
+            activeColorPicker = null;
+            document.querySelectorAll(".color-picker-btn").forEach(function(b) {
+                b.classList.remove("active");
+            });
+            document.querySelectorAll(".color-picker-dropdown").forEach(function(d) {
+                d.classList.remove("open");
+            });
+        }
+        document.addEventListener("click", function() {
+            closeAllColorPickers();
+        });
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") closeAllColorPickers();
+        });
+        function buildRamp() {
+            var s = hexToRgb(shadowColorHex);
+            var h = hexToRgb(highlightColorHex);
+            var lut = new Uint8ClampedArray(256 * 3);
+            for (var i = 0; i < 256; i++) {
+                var t = i / 255;
+                lut[i * 3] = Math.round(s[0] + (h[0] - s[0]) * t);
+                lut[i * 3 + 1] = Math.round(s[1] + (h[1] - s[1]) * t);
+                lut[i * 3 + 2] = Math.round(s[2] + (h[2] - s[2]) * t);
+            }
+            return lut;
+        }
+        function updateRampPreview() {
+            rampPreview.style.background =
+                "linear-gradient(to right, " + shadowColorHex + ", " + highlightColorHex + ")";
+        }
+// ---------- Image loading ----------
+        function loadImageFromFile(file) {
+            if (!file || !/^image\//.test(file.type)) return;
+            var url = URL.createObjectURL(file);
+            var img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = function () {
+                URL.revokeObjectURL(url);
+                sourceImage = img;
+                prepareSampledData(img);
+                dropzone.style.display = "none";
+                exportBtn.disabled = false;
+                render();
+            };
+            img.onerror = function () {
+                URL.revokeObjectURL(url);
+                alert("Sorry, that image could not be loaded.");
+            };
+            img.src = url;
+        }
+        function prepareSampledData(img) {
+            var off = document.createElement("canvas");
+            off.width = canvas.width;
+            off.height = canvas.height;
+            var octx = off.getContext("2d");
+octx.fillStyle = "#ffffff";
+            octx.fillRect(0, 0, off.width, off.height);
+
+            var iw = img.naturalWidth || img.width;
+            var ih = img.naturalHeight || img.height;
+            var scale = Math.max(off.width / iw, off.height / ih);
+            var dw = iw * scale;
+            var dh = ih * scale;
+            octx.drawImage(img, (off.width - dw) / 2, (off.height - dh) / 2, dw, dh);
+
+            try {
+                sampledData = octx.getImageData(0, 0, off.width, off.height);
+            } catch (e) {
+                sampledData = null;
+                alert("Could not read pixel data from this image.");
+            }
+}
+// ---------- Rendering ----------
+        function cellLuminance(x, y, w, h) {
+            var d = sampledData.data;
+            var cw = canvas.width;
+            var ch = canvas.height;
+            var x0 = Math.max(0, Math.floor(x));
+            var y0 = Math.max(0, Math.floor(y));
+            var x1 = Math.min(cw, Math.ceil(x + w));
+            var y1 = Math.min(ch, Math.ceil(y + h));
+            var sum = 0;
+            var count = 0;
+            for (var yy = y0; yy < y1; yy++) {
+                var row = yy * cw;
+                for (var xx = x0; xx < x1; xx++) {
+                    var i = (row + xx) * 4;
+                    sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                    count++;
+                }
+            }
+            return count ? (sum / count) / 255 : 1;
+        }
+        function drawDuotoneFlat(lut) {
+            var d = sampledData.data;
+            var out = ctx.createImageData(canvas.width, canvas.height);
+            var o = out.data;
+            for (var i = 0, p = 0; i < d.length; i += 4, p += 4) {
+                var lum = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
+                var k = lum * 3;
+                o[p] = lut[k];
+                o[p + 1] = lut[k + 1];
+                o[p + 2] = lut[k + 2];
+                o[p + 3] = 255;
+            }
+            ctx.putImageData(out, 0, 0);
+        }
+// Append one halftone dot of the selected shape to a Path2D.
+        // (x, cy) is the left edge / vertical centre of the cell; u is the dot's
+        // growth parameter (radius for circle, half-side for square/diamond,
+        // unclamped thickness for line); half is half the cell size.
+        function appendDot(path, shape, x, cy, u, half, cell) {
+            var cx = x + half;
+            switch (shape) {
+                case "square":
+                    // u = half-side length; aligned squares merge into blocks when dark
+                    path.rect(cx - u, cy - u, u * 2, u * 2);
+                    break;
+                case "diamond":
+                    // rotated square with u = half-diagonal
+                    path.moveTo(cx, cy - u);
+                    path.lineTo(cx + u, cy);
+                    path.lineTo(cx, cy + u);
+                    path.lineTo(cx - u, cy);
+                    path.closePath();
+                    break;
+                case "line":
+                    // horizontal bar; cap thickness at the cell half so rows never
+                    // bleed into each other, and overlap 0.5px to hide seams
+                    var th = Math.min(u, half);
+                    path.rect(x, cy - th / 2, cell + 0.5, th);
+                    break;
+                default: // circle
+                    path.moveTo(cx + u, cy);
+                    path.arc(cx, cy, u, 0, Math.PI * 2);
+            }
+        }
+        function render() {
+            if (renderPending) return;
+            renderPending = true;
+            requestAnimationFrame(function () {
+                renderPending = false;
+                draw();
+            });
+        }
+        function draw() {
+            var W = canvas.width;
+            var H = canvas.height;
+            var lut = buildRamp();
+            var highlight = hexToRgb(highlightColorHex);
+// The highlight colour acts as the "paper" the dots are printed on.
+            ctx.fillStyle = css(highlight);
+            ctx.fillRect(0, 0, W, H);
+
+            if (!sourceImage || !sampledData) return;
+
+            var lpi = parseInt(lpiSlider.value, 10);
+
+            if (lpi === 0) {
+                drawDuotoneFlat(lut);
+                return;
+            }
+
+            var cell = PPI / lpi;
+            if (cell < 2) cell = 2;
+            var half = cell / 2;
+            var maxRadius = half * 1.26;
+            var shape = shapeMode;
+
+            var paths = [];
+            var bandColors = [];
+            for (var b = 0; b < BANDS; b++) {
+                paths.push(null);
+                var idx = Math.round((b / (BANDS - 1)) * 255) * 3;
+                bandColors.push(css([lut[idx], lut[idx + 1], lut[idx + 2]]));
+            }
+
+            for (var y = 0; y < H; y += cell) {
+                for (var x = 0; x < W; x += cell) {
+                    var lum = cellLuminance(x, y, cell, cell);
+                    var t = 1 - lum;
+                    if (t <= 0.05) continue;
+
+                    var u = maxRadius * Math.sqrt(t);
+                    if (u < 0.4) continue;
+
+                    var band = Math.round(lum * (BANDS - 1));
+                    var path = paths[band];
+                    if (!path) path = paths[band] = new Path2D();
+
+                    appendDot(path, shape, x, y + half, u, half, cell);
+                }
+            }
+
+            for (var i = 0; i < BANDS; i++) {
+                if (paths[i]) {
+                    ctx.fillStyle = bandColors[i];
+                    ctx.fill(paths[i]);
+                }
+            }
+}
+// ---------- Export ----------
+        function exportPNG() {
+            var out = document.createElement("canvas");
+            out.width = canvas.width;
+            out.height = canvas.height;
+            var octx = out.getContext("2d");
+            octx.fillStyle = highlightColorHex;
+            octx.fillRect(0, 0, out.width, out.height);
+            octx.drawImage(canvas, 0, 0);
+out.toBlob(function (blob) {
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement("a");
+                a.href = url;
+                a.download = "duotone-halftone-" + Date.now() + ".png";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+            }, "image/png");
+}
+// ---------- Event wiring ----------
+        function triggerUpload() {
+            uploadInput.value = "";
+            uploadInput.click();
+        }
+        uploadInput.addEventListener("change", function () {
+            if (uploadInput.files && uploadInput.files[0]) {
+                loadImageFromFile(uploadInput.files[0]);
+            }
+        });
+        uploadBtn.addEventListener("click", triggerUpload);
+        uploadBtn.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                triggerUpload();
+            }
+        });
+        dropzone.addEventListener("click", triggerUpload);
+        dropzone.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                triggerUpload();
+            }
+        });
+        ["dragenter", "dragover"].forEach(function (evt) {
+            dropzone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                dropzone.classList.add("dragover");
+            });
+        });
+        ["dragleave", "drop"].forEach(function (evt) {
+            dropzone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                dropzone.classList.remove("dragover");
+            });
+        });
+        dropzone.addEventListener("drop", function (e) {
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                loadImageFromFile(e.dataTransfer.files[0]);
+            }
+        });
+        window.addEventListener("dragover", function (e) { e.preventDefault(); });
+        window.addEventListener("drop", function (e) { e.preventDefault(); });
+        lpiSlider.addEventListener("input", function () {
+            lpiValue.textContent = lpiSlider.value;
+            render();
+        });
+        shapeSelect.addEventListener("change", function () {
+            shapeMode = shapeSelect.value;
+            render();
+        });
+        swapBtn.addEventListener("click", function () {
+            var tmp = shadowColorHex;
+            updateColorButton(shadowBtn, highlightColorHex);
+            updateColorButton(highlightBtn, tmp);
+            updateRampPreview();
+            render();
+            // Keep any open picker in sync with the swapped color
+            if (activeColorPicker === "shadow") shadowPickerCtl.refreshFromCurrent();
+            if (activeColorPicker === "highlight") highlightPickerCtl.refreshFromCurrent();
+        });
+        exportBtn.addEventListener("click", exportPNG);
+// ---------- Initial state ----------
+        updateColorButton(shadowBtn, shadowColorHex);
+        updateColorButton(highlightBtn, highlightColorHex);
+        document.getElementById("shadowPreview").style.backgroundColor = shadowColorHex;
+        document.getElementById("highlightPreview").style.backgroundColor = highlightColorHex;
+        updateRampPreview();
+// Initialize canvas with highlight color
+        ctx.fillStyle = highlightColorHex;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Main class text</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: 13px Tahoma, "MS Sans Serif", Verdana, sans-serif;
+      color: #222;
+      background: #aaa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      display: flex;
+      height: 100vh;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0;
+      padding: 8px;
+    }
+
+    .reader-toolbar {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button,
+    input {
+      min-height: 28px;
+      border: 1px solid #888;
+      background: #f0f0f0;
+      color: inherit;
+      font: inherit;
+    }
+
+    button {
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    button:disabled { cursor: default; opacity: .55; }
+
+    input {
+      width: 58px;
+      padding: 4px;
+      text-align: center;
+    }
+
+    .reader-stage {
+      position: relative;
+      display: flex;
+      min-height: 0;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      overflow: auto;
+      padding: 12px;
+      background: #999;
+    }
+
+    .reader-page {
+      position: relative;
+      flex: 0 0 auto;
+      width: min(100%, 680px);
+      background: #fff;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 35%);
+    }
+
+    .reader-page canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .page-note {
+      position: absolute;
+      height: auto;
+      pointer-events: none;
+      filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 28%));
+      animation: note-float 4s ease-in-out infinite;
+    }
+
+    .page-note:nth-of-type(even) { animation-delay: -1.7s; }
+
+    @keyframes note-float {
+      0%, 100% { transform: translateY(0) rotate(var(--note-rotation)); }
+      50% { transform: translateY(-8px) rotate(var(--note-rotation)); }
+    }
+
+    .reader-status {
+      position: sticky;
+      z-index: 3;
+      top: 8px;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 8px 12px;
+      background: rgb(255 255 255 / 92%);
+      order: -1;
+    }
+
+    .reader-status:empty { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .page-note { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="reader-toolbar" aria-label="PDF pages">
+    <button id="previous-page" type="button" disabled>Previous</button>
+    <label>
+      Page
+      <input id="page-number" type="number" min="1" value="1" disabled>
+    </label>
+    <span id="page-count">of …</span>
+    <button id="next-page" type="button" disabled>Next</button>
+  </nav>
+  <main id="reader-stage" class="reader-stage">
+    <p id="reader-status" class="reader-status" role="status">Loading class text…</p>
+  </main>
+
+  <script type="module">
+    import * as pdfjs from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
+
+    const pdfPath = "./2610909_WDWDN_READER_02_ENGLISH.pdf";
+    const notes = [
+      // Add one entry for each image, using positions and width as page percentages:
+      // { page: 3, src: "./notes/handwritten-note-01.png", x: 68, y: 12, width: 24, rotation: -5 },
+      { page: 1, src: "./notes/green_star.PNG", x: 68, y: 12, width: 24, rotation: -5 },
+      { page: 1, src: "./notes/green_star.PNG", x: 20, y: 12, width: 24, rotation: -5 },
+      { page: 17, src: "./notes/note17.PNG", x: 80, y: 12, width: 24, rotation: -5 },
+    ];
+
+    pdfjs.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+
+    const stage = document.getElementById("reader-stage");
+    const status = document.getElementById("reader-status");
+    const pageInput = document.getElementById("page-number");
+    const pageCount = document.getElementById("page-count");
+    const previousButton = document.getElementById("previous-page");
+    const nextButton = document.getElementById("next-page");
+    let documentHandle;
+    let currentPage = 1;
+    let resizeFrame;
+    let pageRecords = [];
+    let pageObserver;
+    let currentPageFrame;
+
+    function updateControls() {
+      pageInput.value = String(currentPage);
+      pageInput.max = String(documentHandle.numPages);
+      pageInput.disabled = false;
+      pageCount.textContent = `of ${documentHandle.numPages}`;
+      previousButton.disabled = currentPage <= 1;
+      nextButton.disabled = currentPage >= documentHandle.numPages;
+    }
+
+    async function renderPage(pageNumber) {
+      const record = pageRecords[pageNumber - 1];
+      if (!record || record.rendered || record.rendering) return;
+
+      record.rendering = true;
+      const version = ++record.renderVersion;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      const width = Math.min(stage.clientWidth - 24, 680);
+      const scale = width / record.baseViewport.width;
+      const viewport = record.page.getViewport({ scale: scale * pixelRatio });
+      const canvas = record.canvas;
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${width * record.baseViewport.height / record.baseViewport.width}px`;
+
+      record.notes.forEach(noteData => {
+        const note = document.createElement("img");
+        note.className = "page-note";
+        note.src = noteData.src;
+        note.alt = "";
+        note.setAttribute("aria-hidden", "true");
+        note.style.left = `${noteData.x}%`;
+        note.style.top = `${noteData.y}%`;
+        note.style.width = `${noteData.width}%`;
+        note.style.setProperty("--note-rotation", `${noteData.rotation ?? 0}deg`);
+        note.addEventListener("error", () => {
+          note.remove();
+          status.textContent = `Unable to load note image: ${noteData.src}`;
+        }, { once: true });
+        record.element.appendChild(note);
+      });
+
+      record.renderTask = record.page.render({
+        canvasContext: canvas.getContext("2d"),
+        viewport,
+        transform: pixelRatio === 1 ? null : [1, 0, 0, 1, 0, 0]
+      });
+      try {
+        await record.renderTask.promise;
+        if (record.renderVersion === version) {
+          record.rendered = true;
+          status.textContent = "";
+        }
+      } catch (error) {
+        if (error.name !== "RenderingCancelledException") {
+          showError(error);
+        }
+      } finally {
+        if (record.renderVersion === version) {
+          record.renderTask = null;
+          record.rendering = false;
+        }
+      }
+    }
+
+    function releasePage(record) {
+      if (!record.rendered && !record.rendering) return;
+      record.renderVersion += 1;
+      record.renderTask?.cancel();
+      record.renderTask = null;
+      record.rendering = false;
+      record.rendered = false;
+      record.canvas.width = 0;
+      record.canvas.height = 0;
+      record.element.querySelectorAll(".page-note").forEach(note => note.remove());
+    }
+
+    function goToPage(pageNumber) {
+      if (!documentHandle) return;
+      const target = Math.max(1, Math.min(Math.trunc(pageNumber), documentHandle.numPages));
+      pageRecords[target - 1]?.element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function showError(error) {
+      status.textContent = `Unable to display the class text: ${error.message}`;
+    }
+
+    previousButton.addEventListener("click", () => goToPage(currentPage - 1));
+    nextButton.addEventListener("click", () => goToPage(currentPage + 1));
+    pageInput.addEventListener("change", () => {
+      if (pageInput.value !== "") goToPage(Number(pageInput.value));
+    });
+
+    function updateCurrentPage() {
+      const stageBounds = stage.getBoundingClientRect();
+      const center = stageBounds.top + stage.clientHeight / 2;
+      const closest = pageRecords.reduce((best, record) => {
+        const bounds = record.element.getBoundingClientRect();
+        const distance = Math.abs(bounds.top + bounds.height / 2 - center);
+        return distance < best.distance ? { page: record.number, distance } : best;
+      }, { page: currentPage, distance: Infinity });
+      if (closest.page !== currentPage) {
+        currentPage = closest.page;
+        updateControls();
+      }
+    }
+
+    stage.addEventListener("scroll", () => {
+      cancelAnimationFrame(currentPageFrame);
+      currentPageFrame = requestAnimationFrame(updateCurrentPage);
+    }, { passive: true });
+
+    async function createPages() {
+      for (let number = 1; number <= documentHandle.numPages; number += 1) {
+        const page = await documentHandle.getPage(number);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const element = document.createElement("section");
+        element.className = "reader-page";
+        element.style.aspectRatio = `${baseViewport.width} / ${baseViewport.height}`;
+        element.setAttribute("aria-label", `Page ${number}`);
+        const canvas = document.createElement("canvas");
+        canvas.setAttribute("aria-label", `Main class text page ${number}`);
+        element.appendChild(canvas);
+        stage.appendChild(element);
+        pageRecords.push({
+          number,
+          page,
+          baseViewport,
+          element,
+          canvas,
+          notes: notes.filter(note => note.page === number),
+          renderVersion: 0,
+          rendered: false,
+          rendering: false,
+          renderTask: null
+        });
+        pageObserver.observe(element);
+      }
+
+      pageInput.disabled = false;
+      updateControls();
+      status.textContent = "";
+    }
+
+    pageObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const record = pageRecords.find(candidate => candidate.element === entry.target);
+        if (!record) return;
+        if (entry.isIntersecting) renderPage(record.number);
+        else releasePage(record);
+      });
+    }, { root: stage, rootMargin: "100% 0px" });
+
+    new ResizeObserver(() => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        if (!documentHandle) return;
+        pageRecords.forEach(record => {
+          if (record.rendered || record.rendering) releasePage(record);
+        });
+        pageRecords.forEach(record => {
+          const bounds = record.element.getBoundingClientRect();
+          const stageBounds = stage.getBoundingClientRect();
+          if (bounds.bottom >= stageBounds.top - stage.clientHeight &&
+              bounds.top <= stageBounds.bottom + stage.clientHeight) {
+            renderPage(record.number);
+          }
+        });
+      });
+    }).observe(stage);
+
+    pdfjs.getDocument(pdfPath).promise
+      .then(document => {
+        documentHandle = document;
+        pageCount.textContent = `of ${documentHandle.numPages}`;
+        return createPages();
+      })
+      .catch(showError);
+  </script>
+</body>
+</html>

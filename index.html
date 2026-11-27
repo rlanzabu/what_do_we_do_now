@@ -120,9 +120,9 @@
 
     .desktop-node img {
       display: grid;
-      width: var(--png-size, 74px);
-      height: var(--png-size, 74px);
-      flex: 0 0 var(--png-size, 74px);
+      width: var(--png-size, 80px);
+      height: var(--png-size, 80px);
+      flex: 0 0 var(--png-size, 80px);
       object-fit: contain;
       place-items: center;
       min-width: 0;
@@ -389,6 +389,123 @@
         inset -1px -1px var(--white);
     }
 
+    .window-panel.reader-window .window-viewport {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .materials-content {
+      max-width: 620px;
+      margin: 8px auto;
+    }
+
+    .materials-content h2 { margin: 0 0 8px; }
+
+    .materials-content p {
+      margin: 0 0 16px;
+      color: #444;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .material-option {
+      display: block;
+      margin: 10px 0;
+      padding: 14px;
+      border: 1px solid #aaa;
+      background: #f0f0f0;
+      box-shadow: inset 1px 1px var(--white);
+    }
+
+    .material-option a,
+    .material-option button {
+      color: #00e;
+      font: inherit;
+      text-align: left;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .material-option button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .material-option small {
+      display: block;
+      margin-top: 6px;
+      color: #555;
+      font-size: 11px;
+    }
+
+    .class-reader {
+      display: flex;
+      height: 100%;
+      min-height: 320px;
+      flex-direction: column;
+      gap: 7px;
+      padding: 8px;
+      background: #dedede;
+    }
+
+    .class-reader-toolbar {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .class-reader-toolbar button {
+      padding: 4px 8px;
+      border: 1px solid #888;
+      background: var(--chrome);
+      cursor: pointer;
+    }
+
+    .class-reader-toolbar h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .class-reader-stage {
+      position: relative;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
+      border: 1px solid #888;
+      background: #aaa;
+    }
+
+    .class-reader-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    .handwritten-note {
+      position: absolute;
+      z-index: 1;
+      width: clamp(90px, 17vw, 190px);
+      height: auto;
+      pointer-events: none;
+      filter: drop-shadow(1px 3px 3px rgb(0 0 0 / 28%));
+    }
+
+    .handwritten-note.note-one { top: 12%; left: 5%; transform: rotate(-6deg); }
+    .handwritten-note.note-two { top: 38%; right: 4%; transform: rotate(5deg); }
+    .handwritten-note.note-three { bottom: 8%; left: 12%; transform: rotate(3deg); }
+    .handwritten-note.note-four { top: 8%; right: 13%; transform: rotate(-4deg); }
+
+    @media (max-width: 560px) {
+      .class-reader { padding: 5px; }
+      .class-reader-toolbar { gap: 5px; }
+      .class-reader-toolbar button { padding: 4px 5px; font-size: 11px; }
+      .class-reader-toolbar h2 { display: none; }
+    }
+
     .about-content {
       max-width: 610px;
       margin: 8px auto;
@@ -412,7 +529,7 @@
     .questions-section {
       min-height: 100vh;
       padding: 32px 16px calc(var(--nav-height) + 32px);
-      border-top: 2px solid rgb(255 255 255 / 28%);
+      border-top: 1px solid rgb(0 0 0 / 55%);
       background-color: #111;
       background-image:
         url("./assets/images/cirrus_cloud_white.jpg"),
@@ -445,6 +562,28 @@
       color: #000;
       line-height: 1.5;
       text-shadow: 0 1px 2px rgb(255 255 255 / 70%);
+    }
+
+    .question-picker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      border: 1px solid #b8b8b8;
+      background: #e7e8ed;
+      color: #333;
+      font-size: 12px;
+    }
+
+    .question-picker select {
+      min-width: 0;
+      flex: 1;
+      padding: 5px 7px;
+      border: 1px solid #999;
+      background: #fff;
+      color: #222;
+      font: inherit;
     }
 
     .question-card {
@@ -768,7 +907,7 @@
 
   <section id="questions-section" class="questions-section" aria-labelledby="questions-heading">
     <h1 id="questions-heading">Questions from the class</h1>
-    <p>Explore how responses to our questions shifted from before to after the course.</p>
+    <p>Select a question to explore how responses shifted from before to after the course.</p>
     <div id="questions-content" class="questions-content"></div>
   </section>
 
@@ -779,6 +918,9 @@
       </button>
       <button id="list-button" class="task-btn" type="button" aria-label="Project list">
         <span class="task-icon" aria-hidden="true">≡</span><span class="task-name">List</span>
+      </button>
+      <button id="materials-button" class="task-btn" type="button" aria-label="Materials from class">
+        <span class="task-icon" aria-hidden="true">▤</span><span class="task-name">Materials</span>
       </button>
       <button id="questions-button" class="task-btn" type="button" aria-label="Class questions">
         <span class="task-icon" aria-hidden="true">
@@ -817,22 +959,22 @@
       // Add or edit one object per outcome. `png` is the desktop-node image;
       // optional `screenshot` is the image shown in that project's description.
       // Both paths are relative to this page; omit screenshot to reuse png.
-      // Set pngSize in pixels to resize an individual thumbnail; it defaults to 74.
+      // Set pngSize in pixels to resize an individual thumbnail; it defaults to 80.
       // Edit `projectName`, `participant`, and `progress` independently for each project.
       const items = [
-        { title: "Sina Tatjana Bolder", projectName: "Project 01", participant: "KISD student", creator: "KISD student", session: "2026", html: "./projects/project-01.html", png: "./assets/thumbnails/2000_folder.gif", screenshot: "./assets/screenshots/2000_folder.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Marta Alves", projectName: "Project 02", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/Type_in_Motion.html", png: "./assets/thumbnails/giphy.gif", screenshot: "./assets/screenshots/cutie.gif", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Sina Tatjana Bolder", projectName: "Polaroid Editor", participant: "KISD student", creator: "KISD student", session: "2026", html: "./projects/polaroid_editor.html", png: "./assets/thumbnails/august_bust.png", screenshot: "./assets/screenshots/polaroid.png", description: "Have you ever wished you could turn one of your pictures into a vintage-style Polaroid? Maybe a portrait of yourself, a holiday memory or a cute little photo collage? That’s exactly why I created the Polaroid Editor! It’s a simple and fun tool that lets you give your photos a retro Polaroid look. You can upload your own pictures, arrange them freely, resize and rotate them, and add little captions or date stamps. You can also adjust the vintage effect to get the look you like best. For the background, you can choose from a selection of preset colours or create your own by entering a custom colour code. Once you’re happy with your composition, you can export it as a PNG and keep or share your creation. Have fun playing around with it!", socials: [], progress: "in progress", status: "wip" },
+        { title: "Marta Alves", projectName: "Project 02", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/book_cover.html", png: "./assets/thumbnails/giphy.gif", screenshot: "./assets/screenshots/book_cover.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
         { title: "Christopher Fritz Siebenhaar", projectName: "AI, Ai, ai… Does the AI love me back? <3",participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/ai_fortune.html", png: "./assets/thumbnails/Logo.png", screenshot: "./assets/screenshots/Christopher_Siebenhaar_Tool_Daisy.png", description: "A wheel of fortune, a percentage calculator, and a daisy whose torn petals you pluck one by one until the verdict lands: “It loves me” or “It loves me not”. AI, Ai, ai… Does the AI love me back? is a web tool for anyone who has ever wondered whether their favorite chatbot feels the same way. Instead of one answer, it offers three ways to find out. Every method is part science, part superstition, and entirely unscientific. The perfect bridge between lovesick ritual and machine logic, a little joke about asking software for reassurance. </3.", socials: [{ label: "christopher.sbh", url: "https://www.instagram.com/christopher.sbh/" }], progress: "in progress", status: "wip" },
-        { title: "Lara Marie Schiefer", projectName: "Project 04", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-04.html", png: "./assets/thumbnails/Disaster-Girl.jpg", screenshot: "./assets/screenshots/falling_bart.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Lara Marie Schiefer", projectName: "Dog Ear", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-04.html", png: "./assets/thumbnails/Disaster-Girl.jpg", screenshot: "./assets/screenshots/falling_bart.png", description: "Never again forget what you read! Dog-Ear is your highlighter’s best friend. Snap a photo of the page you marked, upload your highlighted parts, and get a summary of what you read in one short sentence, plus the quote word for word with its page number. No more flipping through your books to find that one line! All the parts of your books that you highlighted now live in one place, so you can easily look them up. Everything is thematically sorted by book, chapter and topic, with a table of contents that jumps straight to each note, and a search box that finds any word across your whole library. Compare the photo with the text side by side, fix a detail if needed, and save. Your notes stay safely in your browser, and it comes in soft green with a dark mode for late-night reading sessions. ", socials: [], progress: "in progress", status: "wip" },
         { title: "Nastasia Dabringhaus", projectName: "Value Bridge – The Process Receipt", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-05.html", png: "./assets/thumbnails/value-bridge-icon.png", screenshot: "./assets/screenshots/value-bridge-icon.png", description: "Value Bridge helps designers price a finished project fairly when the client only sees hours or deliverables. Instead of one lump sum, the work is split into five process building blocks (Discovery, Framing, Facilitation, Relationship & process work, Reflection), each translated into market language such as “Strategy” or “Stakeholder management”. For every block you enter what the client actually sees, the visible hours, and what share of the whole work that is. The tool calculates the work hidden behind it and prints everything as a thermal-paper receipt: visible to client, behind it, total. You can add your own services, switch blocks on or off, and download the receipt as a 1080 x 1350 PNG. A “Sources & numbers” panel lists the research behind the logic, including caveats. Value Bridge is a bridge between market logic and transformative design practice: it makes invisible process work legible, countable and payable.", socials: [{ label: "LinkedIn: Nastasia Dabringhaus", url: "https://www.linkedin.com/search/results/people/?keywords=Nastasia%20Dabringhaus" }], progress: "in progress", status: "wip" },
-        { title: "Meike Raupach", projectName: "Project 06", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-06.html", png: "./assets/thumbnails/bot.png", screenshot: "./assets/screenshots/bot.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Hannah Shirin Tempel", projectName: "Project 07", participant: "Hannah Shirin Tempel", creator: "Student project", session: "2026", html: "./projects/project-07.html", png: "./assets/thumbnails/august_bust.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Lou Rosa Sternebeck", projectName: "Project 08", participant: "Lou Rosa Sternebeck", creator: "Student project", session: "2026", html: "./projects/project-08.html", png: "./assets/thumbnails/2000_folder.gif", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "Aliaksandra Kraskouskaya", creator: "Student project", session: "2026", html: "./projects/project-09.html", png: "./assets/thumbnails/angel.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Jeanette Schweiger", projectName: "Project 10", participant: "Jeanette Schweiger", creator: "Student project", session: "2026", html: "./projects/project-10.html", png: "./assets/thumbnails/flower.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Ilvy Anik Frommelt", projectName: "Project 11", participant: "Ilvy Anik Frommelt", creator: "Student project", session: "2026", html: "./projects/project-11.html", png: "./assets/thumbnails/aspirin.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "Student project", creator: "Student project", session: "2026", html: "./projects/project-13.html", png: "./assets/thumbnails/luftballon.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
-        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Raffaella Lanza", creator: "Raffaella Lanza", session: "2026", html: "./projects/draw-something.html", png: "./assets/thumbnails/cutie.gif", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
+        { title: "Meike Raupach", projectName: "Dotty – The Halftone Tool", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/dotty.html", png: "./assets/thumbnails/boris.gif", screenshot: "./assets/screenshots/dotty.png", description: "“Dotty – The Halftone Tool” a browser-based duotone halftone generator was created for my work as a Risography tutor – to help students understand how their images will look when printed on a Risograph at a specific LPI (lines per inch), making print outcomes predictable before they ever touch the machine. The tool converts an uploaded or drag-dropped image into a duotone halftone using two user-chosen colors, one for shadows and one for highlights. An “LPI” slider sets the screen frequency, mirroring real Risograph settings, and a shape selector offers circle, square, diamond, or line dots makes it also fun to use for digital processes.”", socials: [], progress: "in progress", status: "wip" },
+        { title: "Hannah Shirin Tempel", projectName: "Font Morpher 3000", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/font_morpher_3000.html", png: "./assets/thumbnails/funny_random1.png", screenshot: "./assets/screenshots/font_morpher.png", description: "Have you ever wondered what two completely different fonts would look like if they were smushed together? Well, now you no longer have to!With the help of the “Font-Morpher 3000,” you can blend, stretch, and combine any two typefaces to create something entirely unique. Whether you want to mash up a classic serif with a futuristic display font or just see what kind of typographic chaos happens when two styles collide, this tool lets you bring your wildest ideas to life.The browser-based application requires no installation and is super easy to use. It features an intuitive interface and plenty of customization options to play around with. Best of all, once you are happy with your creation, you can easily download your custom font and use it in your own design projects.Go ahead, try it out for yourself, and have fun experimenting!", socials: [], progress: "in progress", status: "wip" },
+        { title: "Lou Rosa Sternebeck", projectName: "type/motion", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/type_motion.html", png: "./assets/thumbnails/lamb.gif", screenshot: "./assets/screenshots/type_motion.png", description: "Who said typography has to sit still? TYPE/MOTION is an interactive creative playground that brings typography to life. Stretch it, twist it, bend it, blur it — explore the possibilities of text beyond its conventional form.Manipulate entire words or individual letters, experiment with custom fonts, colors, gradients, distortions, lighting, shadows and visual effects.At the heart of the tool are five individually editable keyframes. Each frame represents a different stage of your design, allowing you to create unique compositions that automatically transition into one another, transforming static designs into fluid animations.Adjust the speed, duration and transitions, create seamless loops and preview your animation in real time. Once you’re happy with the result, export individual frames as images or download the entire animation as a video.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Aliaksandra Kraskouskaya", projectName: "Project 09", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-09.html", png: "./assets/thumbnails/angel.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Jeanette Schweiger", projectName: "Flowertype", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/flowertype-JeanetteSchweiger.html", png: "./assets/thumbnails/flowertype.png", screenshot: "./assets/screenshots/flowertype.png", description: "Flowertype is a browser-based generative typography tool that turns a short sentence into a three-dimensional flower made of letters. Users type up to 36 characters, which the tool repeats, separated by bullet points, along a spiral that winds outward across a petal-shaped surface. Each letter scales to fit the gap between rings, so the text grows from a tiny core to large outer petals and tilts with the surface’s curvature.Five sliders shape the form.The number of petals, how deeply they are cut, how many rings the spiral makes, how far the flower cups forward or back (bloom), and how much the petals twist (swirl). A palette of six colours sets the background and flower independently. Dragging rotates the flower in 3D, and it keeps spinning briefly after you let go. Scrolling zooms in and out..", socials: [], progress: "in progress", status: "wip" },
+        { title: "Ilvy Anik Frommelt", projectName: "Your font", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/your_font.html", png: "./assets/thumbnails/glitter_t.png", screenshot: "./assets/screenshots/meine-handschrift.png", description: "Your Font is a very nice tool for people who are interested in typography and want to use their own handwriting online! Users can write each letter of the alphabet and some extra symbols by hand into the web tool, and it creates a new font in different typefaces that can be named however they like. It can be downloaded and then used in other programs. The result is a unique handwriting as a digital font!", socials: [], progress: "in progress", status: "wip" },
+        { title: "Polly Alice Wheeler", projectName: "Project 13", participant: "KISD student", creator: "Student project", session: "2026", html: "./projects/project-13.html", png: "./assets/thumbnails/luftballon.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "Add a short description of this project.", socials: [], progress: "in progress", status: "wip" },
+        { title: "Raffaella Lanza", projectName: "Draw Something", participant: "Code & Context Student", creator: "Raffaella Lanza", session: "2026", html: "./projects/draw-something.html", png: "./assets/thumbnails/bot.png", screenshot: "./assets/screenshots/yellow_rabbit.png", description: "A web drawing studio for making and exporting illustrations.", socials: [], progress: "complete", status: "ready" },
 
       ];
 
@@ -916,7 +1058,7 @@
           const item = items[index];
           const savedSize = localStorage.getItem(`project-image-size:${item.html}`);
           const configuredSize = savedSize === null ? item.pngSize : Number(savedSize);
-          applyThumbnailSize(node, item, Number.isFinite(configuredSize) ? configuredSize : 74, false);
+          applyThumbnailSize(node, item, Number.isFinite(configuredSize) ? configuredSize : 80, false);
         });
         const nodeWidth = Math.max(...nodes.map(node => node.offsetWidth));
         const nodeHeight = Math.max(...nodes.map(node => node.offsetHeight));
@@ -978,7 +1120,7 @@
       }
 
       function applyThumbnailSize(node, item, size, persist = true) {
-        const pngSize = Math.max(32, Math.min(Math.round(size), 180));
+        const pngSize = Math.max(80, Math.min(Math.round(size), 180));
         item.pngSize = pngSize;
         node.style.setProperty("--png-size", `${pngSize}px`);
         node.style.width = `${Math.max(
@@ -997,6 +1139,7 @@
       function openWindow(windowTitle, content, item = null) {
         closeContextMenu();
         activeItem = item;
+        panel.classList.remove("reader-window");
         title.textContent = windowTitle;
         viewport.replaceChildren(content);
         panel.classList.remove("maximized");
@@ -1031,13 +1174,105 @@
         openWindow("About — Class Archive", content);
       }
 
+      function openMaterials() {
+        const content = document.createElement("section");
+        content.className = "materials-content";
+        const heading = document.createElement("h2");
+        heading.textContent = "Materials from class";
+        const intro = document.createElement("p");
+        intro.textContent = "Download the how-to manual or open the class reader on screen.";
+
+        const manualOption = document.createElement("div");
+        manualOption.className = "material-option";
+        const manualLink = document.createElement("a");
+        manualLink.href = "./assets/materials/how-to-manual.pdf";
+        manualLink.download = "how-to-manual.pdf";
+        manualLink.textContent = "Download the how-to manual (PDF)";
+        const manualNote = document.createElement("small");
+        manualNote.textContent = "Add the manual PDF as assets/materials/how-to-manual.pdf.";
+        manualOption.append(manualLink, manualNote);
+
+        const readerOption = document.createElement("div");
+        readerOption.className = "material-option";
+        const readerButton = document.createElement("button");
+        readerButton.type = "button";
+        readerButton.textContent = "Read the main class text";
+        readerButton.addEventListener("click", openClassText);
+        const readerNote = document.createElement("small");
+        readerNote.textContent = "Opens the class reader on screen without a download link.";
+        readerOption.append(readerButton, readerNote);
+
+        content.append(heading, intro, manualOption, readerOption);
+        openWindow("Materials from class", content);
+      }
+
+      function openClassText() {
+        const content = document.createElement("section");
+        content.className = "class-reader";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "class-reader-toolbar";
+        const backButton = document.createElement("button");
+        backButton.type = "button";
+        backButton.textContent = "Back to materials";
+        backButton.addEventListener("click", openMaterials);
+        const heading = document.createElement("h2");
+        heading.textContent = "Main class text";
+        toolbar.append(backButton, heading);
+
+        const stage = document.createElement("div");
+        stage.className = "class-reader-stage";
+        const reader = document.createElement("iframe");
+        reader.className = "class-reader-frame";
+        reader.src = "./assets/materials/reader.html";
+        reader.title = "Main class text";
+        reader.setAttribute("aria-label", "Main class text reader");
+        stage.appendChild(reader);
+
+        const noteFiles = [
+          "./assets/materials/notes/handwritten-note-01.png",
+          "./assets/materials/notes/handwritten-note-02.png",
+          "./assets/materials/notes/handwritten-note-03.png",
+          "./assets/materials/notes/handwritten-note-04.png"
+        ];
+        noteFiles.forEach((source, index) => {
+          const note = document.createElement("img");
+          note.className = `handwritten-note note-${["one", "two", "three", "four"][index]}`;
+          note.src = source;
+          note.alt = "";
+          note.setAttribute("aria-hidden", "true");
+          note.addEventListener("error", () => note.remove(), { once: true });
+          stage.appendChild(note);
+        });
+
+        content.append(toolbar, stage);
+        openWindow("Main class text", content);
+        panel.classList.add("reader-window");
+      }
+
       function renderQuestions() {
         const content = document.getElementById("questions-content");
         content.replaceChildren();
 
+        const picker = document.createElement("label");
+        picker.className = "question-picker";
+        const pickerLabel = document.createElement("span");
+        pickerLabel.textContent = "Question";
+        const select = document.createElement("select");
+        select.setAttribute("aria-label", "Choose a class question");
         classQuestions.forEach((question, index) => {
-          const card = document.createElement("article");
-          card.className = "question-card";
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = `${index + 1}. ${question.question}`;
+          select.appendChild(option);
+        });
+        picker.append(pickerLabel, select);
+
+        const card = document.createElement("article");
+        card.className = "question-card";
+        const renderQuestion = index => {
+          const question = classQuestions[index];
+          card.replaceChildren();
           const heading = document.createElement("h2");
           heading.textContent = `${index + 1}. ${question.question}`;
           const pair = document.createElement("div");
@@ -1124,8 +1359,11 @@
           });
           transition.append(beforeLabel, slider, afterLabel, reading);
           card.append(heading, pair, transition);
-          content.appendChild(card);
-        });
+        };
+
+        select.addEventListener("change", () => renderQuestion(Number(select.value)));
+        content.append(picker, card);
+        renderQuestion(0);
       }
 
       function openList() {
@@ -1293,10 +1531,10 @@
         resizeValue.textContent = `${node.dataset.pngSize}px`;
         const slider = document.createElement("input");
         slider.type = "range";
-        slider.min = "32";
+        slider.min = "80";
         slider.max = "180";
         slider.step = "2";
-        slider.value = node.dataset.pngSize || "74";
+        slider.value = node.dataset.pngSize || "80";
         slider.setAttribute("aria-label", `Thumbnail size for ${item.title}`);
         slider.addEventListener("input", () => {
           resizeValue.textContent = `${applyThumbnailSize(node, item, Number(slider.value))}px`;
@@ -1357,7 +1595,7 @@
         node.type = "button";
         node.className = "desktop-node";
         node.dataset.index = String(index);
-        node.dataset.pngSize = String(item.pngSize ?? 74);
+        node.dataset.pngSize = String(item.pngSize ?? 80);
         node.setAttribute("aria-label", `${item.title}, ${item.projectName || "Project name"}`);
 
         const image = document.createElement("img");
@@ -1439,6 +1677,7 @@
 
       document.getElementById("about-button").addEventListener("click", openAbout);
       document.getElementById("list-button").addEventListener("click", openList);
+      document.getElementById("materials-button").addEventListener("click", openMaterials);
       document.getElementById("questions-button").addEventListener("click", () => {
         if (!shell.hidden) closeWindow();
         document.getElementById("questions-section").scrollIntoView({

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Do We Do Now — Text Flower</title>
+<style>
+  :root {
+    --ink: #000;
+    --paper: #fff;
+    --font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --side: 300px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: flex;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 12px;
+    overflow: hidden;
+  }
+
+  /* ---------- Sidebar ---------- */
+  aside {
+    width: var(--side);
+    flex: none;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 2px solid var(--ink);
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  section { display: flex; flex-direction: column; gap: 10px; }
+  .label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 5px;
+    font-size: 12px;
+  }
+  .hint { font-size: 10px; line-height: 1.4; }
+
+  input[type="text"] {
+    width: 100%;
+    font: inherit;
+    font-size: 15px;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    padding: 9px 10px;
+    outline: none;
+  }
+  input[type="text"]:focus { background: var(--ink); color: var(--paper); }
+
+  .row { display: flex; flex-direction: column; gap: 6px; }
+  .row-head { display: flex; justify-content: space-between; font-size: 11px; }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    background: transparent;
+    margin: 0;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: var(--ink); }
+  input[type="range"]::-moz-range-track { height: 2px; background: var(--ink); }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    margin-top: -6px;
+    background: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 0;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 10px; height: 10px;
+    background: var(--ink);
+    border: 2px solid var(--ink);
+    border-radius: 0;
+  }
+  input[type="range"]:focus-visible { outline: 2px dashed var(--ink); outline-offset: 2px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+  .swatch {
+    aspect-ratio: 1;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+  }
+  .swatch[aria-pressed="true"]::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 2px solid var(--ink);
+  }
+  .swatch:focus-visible { outline: 2px dashed var(--ink); outline-offset: 5px; }
+  .sub { font-size: 10px; margin: 4px 0 10px; }
+  .swatches { padding: 0 6px; }
+
+  .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+  button.btn {
+    font: inherit;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 12px 8px;
+    border: 2px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button.btn.primary { background: var(--ink); color: var(--paper); }
+  button.btn:hover { background: var(--ink); color: var(--paper); }
+  button.btn.primary:hover { background: var(--paper); color: var(--ink); }
+  button.btn:focus-visible { outline: 2px dashed var(--ink); outline-offset: 3px; }
+
+  /* ---------- Stage ---------- */
+  main {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: #f2f2f2;
+  }
+  canvas {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100vh - 48px);
+    aspect-ratio: 1080 / 1350;
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--ink);
+    cursor: grab;
+    touch-action: none;
+  }
+  canvas.dragging { cursor: grabbing; }
+
+  @media (max-width: 760px) {
+    body { flex-direction: column; overflow: auto; height: auto; }
+    aside { width: 100%; height: auto; border-right: 0; border-bottom: 2px solid var(--ink); }
+    main { height: auto; padding: 16px; }
+    canvas { max-height: none; width: 100%; }
+    .buttons { margin-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<aside>
+  <h1>What do<br>we do now</h1>
+
+  <section>
+    <label class="label" for="text">Type <span id="count">0/36</span></label>
+    <input id="text" type="text" maxlength="36" autocomplete="off" spellcheck="false">
+    <span class="hint">Max. 36 characters — so the flower always holds the full sentence.</span>
+  </section>
+
+  <section>
+    <div class="label">Shape</div>
+    <div class="row">
+      <div class="row-head"><label for="petals">Petals</label><output id="petals-v"></output></div>
+      <input id="petals" type="range" min="3" max="12" step="1">
+    </div>
+    <div class="row">
+      <div class="row-head"><label for="depth">Petal depth</label><output id="depth-v"></output></div>
+      <input id="depth" type="range" min="0" max="85" step="1">
+    </div>
+    <div class="row">
+      <div class="row-head"><label for="rings">Rings</label><output id="rings-v"></output></div>
+      <input id="rings" type="range" min="4" max="14" step="1">
+    </div>
+    <div class="row">
+      <div class="row-head"><label for="bloom">Bloom</label><output id="bloom-v"></output></div>
+      <input id="bloom" type="range" min="-100" max="100" step="1">
+    </div>
+    <div class="row">
+      <div class="row-head"><label for="swirl">Swirl</label><output id="swirl-v"></output></div>
+      <input id="swirl" type="range" min="-100" max="100" step="1">
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Colour</div>
+    <div>
+      <div class="sub">Background</div>
+      <div class="swatches" id="bg-swatches" role="group" aria-label="Background colour"></div>
+    </div>
+    <div>
+      <div class="sub">Flower</div>
+      <div class="swatches" id="fg-swatches" role="group" aria-label="Flower colour"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="label">Mouse</div>
+    <span class="hint">Drag to rotate in 3D<br>Scroll to zoom</span>
+  </section>
+
+  <div class="buttons">
+    <button class="btn" id="clear" type="button">Clear</button>
+    <button class="btn primary" id="export" type="button">Export PNG</button>
+  </div>
+</aside>
+
+<main>
+  <canvas id="c" width="1080" height="1350" aria-label="3D text flower"></canvas>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- Constants ----------
+  const W = 1080, H = 1350;
+  const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
+  const FS = 100;                 // reference font size for drawing / measuring
+  const CAP = 0.36 * FS;          // half cap-height offset to centre capitals
+  const SEP = " • ";
+  const R = 470;                  // flower radius in world units
+  const FOCAL = 1900;             // perspective focal length
+  const MAX_GLYPHS = 6000;
+  const COLOURS = ["#000000", "#FFFFFF", "#EF2C1A", "#F9CAFF", "#7EBCFF", "#B9AA20"];
+
+  const DEFAULTS = Object.freeze({
+    text: "What do we do now",
+    petals: 6,
+    depth: 55,
+    rings: 9,
+    bloom: 45,
+    swirl: 15,
+    bg: "#FFFFFF",
+    fg: "#000000",
+  });
+
+  // ---------- State ----------
+  let state = { ...DEFAULTS };
+  let M;            // 3x3 view rotation matrix (row-major array of 9)
+  let zoom = 1;
+  let glyphs = [];
+  let dirty = true;
+  let vx = 0, vy = 0;   // rotation inertia
+
+  const canvas = document.getElementById("c");
+  const ctx = canvas.getContext("2d");
+
+  // ---------- Math helpers ----------
+  const mul = (a, b) => {
+    const r = new Array(9);
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++)
+        r[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j];
+    return r;
+  };
+  const rotX = a => { const c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, c, -s, 0, s, c]; };
+  const rotY = a => { const c = Math.cos(a), s = Math.sin(a); return [c, 0, s, 0, 1, 0, -s, 0, c]; };
+  const sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const len3 = a => Math.hypot(a[0], a[1], a[2]);
+  const norm3 = a => { const l = len3(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+
+  const defaultView = () => { M = mul(rotX(0.55), rotY(-0.15)); zoom = 1; vx = vy = 0; };
+
+  // ---------- Flower surface ----------
+  // u in [0,1] = normalised distance from centre, th = angle.
+  function surf(u, th) {
+    const petals = state.petals;
+    const depth = state.depth / 100;
+    const bloom = state.bloom / 100;
+    const swirl = state.swirl / 100;
+    const ph = th + swirl * u * Math.PI * 2;
+    const m = (1 - depth) + depth * Math.pow(Math.abs(Math.cos(petals * ph / 2)), 0.7);
+    const rho = R * Math.pow(u, 1.2) * m;
+    const z = -bloom * R * 0.95 * u * u * (0.55 + 0.45 * m);
+    return [rho * Math.cos(th), rho * Math.sin(th), z];
+  }
+
+  // ---------- Glyph measurement ----------
+  const widthCache = new Map();
+  function glyphWidth(ch) {
+    if (!widthCache.has(ch)) {
+      ctx.font = `700 ${FS}px ${FONT}`;
+      widthCache.set(ch, ctx.measureText(ch).width);
+    }
+    return widthCache.get(ch);
+  }
+
+  // ---------- Build letter layout along the spiral ----------
+  function build() {
+    glyphs = [];
+    const text = state.text.trim().replace(/\s+/g, " ").toUpperCase();
+    if (!text) return;
+    const seq = Array.from(text + SEP);
+
+    const turns = state.rings;
+    const N = Math.ceil(turns * 700);
+    const TAU = Math.PI * 2;
+    const thetaOf = u => TAU * turns * u;
+
+    // Sample the spiral and accumulate arc length
+    const cum = new Float64Array(N + 1);
+    let prev = surf(0, 0);
+    for (let i = 1; i <= N; i++) {
+      const u = i / N;
+      const p = surf(u, thetaOf(u));
+      cum[i] = cum[i - 1] + len3(sub3(p, prev));
+      prev = p;
+    }
+    const total = cum[N];
+
+    // arc length -> u (pointer walks forward monotonically)
+    let ptr = 0;
+    const uAt = s => {
+      while (ptr < N && cum[ptr + 1] < s) ptr++;
+      if (ptr >= N) return 1;
+      const seg = cum[ptr + 1] - cum[ptr] || 1;
+      return (ptr + (s - cum[ptr]) / seg) / N;
+    };
+    // letter size = distance to the next ring at the same angle
+    const sizeAt = u => {
+      const th = thetaOf(u);
+      const a = surf(u, th);
+      const b = surf(Math.min(u + 1 / turns, 1.25), th);
+      return len3(sub3(b, a)) * 0.9;
+    };
+
+    const eps = 1e-4;
+    let s = 0, idx = 0;
+    while (s < total && glyphs.length < MAX_GLYPHS) {
+      const u0 = uAt(s);
+      const size = sizeAt(u0);
+      if (size < 7) { s += 2; continue; }       // skip the tiny core
+
+      const ch = seq[idx % seq.length];
+      idx++;
+      const adv = (glyphWidth(ch) / FS) * size;
+      const sc = s + adv / 2;
+      s += adv + size * 0.04;                     // a touch of tracking
+      if (sc > total) break;
+      if (ch === " ") continue;
+
+      const uc = uAt(sc);
+      const th = thetaOf(uc);
+      const p = surf(uc, th);
+      const t = norm3(sub3(surf(uc + eps, thetaOf(uc + eps)), surf(uc - eps, thetaOf(uc - eps))));
+      let b = sub3(surf(uc + eps, th), surf(Math.max(uc - eps, 0), th));
+      const d = dot3(b, t);
+      b = norm3([b[0] - d * t[0], b[1] - d * t[1], b[2] - d * t[2]]);
+
+      glyphs.push({ ch, w: glyphWidth(ch), p, t, b, size: sizeAt(uc) });
+    }
+  }
+
+  // ---------- Render ----------
+  const order = [];
+  function render(target = ctx, bg = state.bg) {
+    const c = target;
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.fillStyle = bg;
+    c.fillRect(0, 0, W, H);
+    if (!glyphs.length) return;
+
+    const cx = W / 2, cy = H / 2;
+    const m = M;
+    const rot = v => [
+      m[0] * v[0] + m[1] * v[1] + m[2] * v[2],
+      m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
+      m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
+    ];
+    const proj = (x, y, z) => { const k = FOCAL / (FOCAL + z); return [cx + x * k, cy + y * k]; };
+
+    const n = glyphs.length;
+    const P = new Array(n);
+    order.length = n;
+    for (let i = 0; i < n; i++) {
+      const g = glyphs[i];
+      const p = rot(g.p);
+      P[i] = { g, p: [p[0] * zoom, p[1] * zoom, p[2] * zoom] };
+      order[i] = i;
+    }
+    order.sort((a, b) => P[b].p[2] - P[a].p[2]);  // far to near
+
+    c.font = `700 ${FS}px ${FONT}`;
+    c.textBaseline = "alphabetic";
+    c.lineJoin = "round";
+    c.lineWidth = FS * 0.16;
+    c.strokeStyle = bg;
+    c.fillStyle = state.fg;
+
+    for (const i of order) {
+      const { g, p } = P[i];
+      if (FOCAL + p[2] < 80) continue;
+      const s = g.size * zoom;
+      const t = rot(g.t), b = rot(g.b);
+      const o = proj(p[0], p[1], p[2]);
+      const ax = proj(p[0] + t[0] * s, p[1] + t[1] * s, p[2] + t[2] * s);
+      const ay = proj(p[0] - b[0] * s, p[1] - b[1] * s, p[2] - b[2] * s);
+      c.setTransform(
+        (ax[0] - o[0]) / FS, (ax[1] - o[1]) / FS,
+        (ay[0] - o[0]) / FS, (ay[1] - o[1]) / FS,
+        o[0], o[1]
+      );
+      c.strokeText(g.ch, -g.w / 2, CAP);
+      c.fillText(g.ch, -g.w / 2, CAP);
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  function loop() {
+    if (Math.abs(vx) > 1e-4 || Math.abs(vy) > 1e-4) {
+      applyRotation(vx, vy);
+      if (!dragging) { vx *= 0.93; vy *= 0.93; }
+      dirty = true;
+    }
+    if (dirty) { render(); dirty = false; }
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- Mouse / touch rotation ----------
+  let dragging = false, lastX = 0, lastY = 0;
+  const pxToRad = () => 3.2 / canvas.getBoundingClientRect().width;
+
+  function applyRotation(dx, dy) {
+    M = mul(rotX(dy), mul(rotY(-dx), M));
+  }
+
+  canvas.addEventListener("pointerdown", e => {
+    dragging = true;
+    lastX = e.clientX; lastY = e.clientY;
+    vx = vy = 0;
+    canvas.setPointerCapture(e.pointerId);
+    canvas.classList.add("dragging");
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const k = pxToRad();
+    const dx = (e.clientX - lastX) * k, dy = (e.clientY - lastY) * k;
+    lastX = e.clientX; lastY = e.clientY;
+    applyRotation(dx, dy);
+    vx = dx; vy = dy;
+    dirty = true;
+  });
+  const endDrag = () => { dragging = false; canvas.classList.remove("dragging"); };
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("wheel", e => {
+    e.preventDefault();
+    zoom = Math.min(2.6, Math.max(0.35, zoom * Math.exp(-e.deltaY * 0.0015)));
+    dirty = true;
+  }, { passive: false });
+
+  // ---------- UI wiring ----------
+  const $ = id => document.getElementById(id);
+  const textInput = $("text");
+  const count = $("count");
+  const sliders = {
+    petals: v => v,
+    depth: v => v + "%",
+    rings: v => v,
+    bloom: v => v,
+    swirl: v => v,
+  };
+
+  function syncUI() {
+    textInput.value = state.text;
+    count.textContent = `${state.text.length}/${textInput.maxLength}`;
+    for (const key of Object.keys(sliders)) {
+      $(key).value = state[key];
+      $(key + "-v").textContent = sliders[key](state[key]);
+    }
+    for (const [group, key] of [["bg-swatches", "bg"], ["fg-swatches", "fg"]]) {
+      for (const btn of $(group).children)
+        btn.setAttribute("aria-pressed", String(btn.dataset.colour === state[key]));
+    }
+  }
+
+  function rebuild() { build(); dirty = true; }
+
+  textInput.addEventListener("input", () => {
+    state.text = textInput.value.slice(0, textInput.maxLength);
+    count.textContent = `${state.text.length}/${textInput.maxLength}`;
+    rebuild();
+  });
+
+  for (const key of Object.keys(sliders)) {
+    $(key).addEventListener("input", e => {
+      state[key] = Number(e.target.value);
+      $(key + "-v").textContent = sliders[key](state[key]);
+      rebuild();
+    });
+  }
+
+  function makeSwatches(groupId, key) {
+    const group = $(groupId);
+    for (const col of COLOURS) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "swatch";
+      b.style.background = col;
+      b.dataset.colour = col;
+      b.setAttribute("aria-label", col);
+      b.title = col;
+      b.addEventListener("click", () => { state[key] = col; syncUI(); dirty = true; });
+      group.appendChild(b);
+    }
+  }
+  makeSwatches("bg-swatches", "bg");
+  makeSwatches("fg-swatches", "fg");
+
+  $("clear").addEventListener("click", () => {
+    state = { ...DEFAULTS };
+    defaultView();
+    syncUI();
+    rebuild();
+  });
+
+  $("export").addEventListener("click", () => {
+    render();
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const name = (state.text.trim() || "flower").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      a.href = url;
+      a.download = `${name || "flower"}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, "image/png");
+  });
+
+  // ---------- Init ----------
+  defaultView();
+  syncUI();
+  const start = () => { widthCache.clear(); rebuild(); };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+  start();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
